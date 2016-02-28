@@ -1,0 +1,78 @@
+includes 	+= -Iinclude -Isrc
+sources		+= 																		\
+																					\
+				src/uslog/uslog.c													\
+				src/udebug/udebug.c													\
+				src/umalloc/umalloc.c												\
+				src/ustring/ustring.c												\
+				src/utv/utv.c 														\
+				src/usleep/usleepselect/usleepselect.c								\
+				src/ustrset/ustrset.c												\
+				src/upcsem/upcsem.c													\
+				src/uproclock/uproclock.c											\
+				src/uchecksum/umd5.c												\
+				src/uchecksum/ucrc.c												\
+				src/ufile/ufile.c													\
+				src/uconf/uconf-parse.c												\
+				src/usystemvs/usystemvs.c											\
+				src/udatetime/udatetime.c											\
+				src/upid/upid.c														\
+				src/ukeyword/ukeyword.c												\
+				src/ubacktrace/ubacktrace.c											\
+				src/ustdvalue/ustdvalue.c											\
+				src/ucyclememory/ucycm.c											\
+				src/ucyclememory/ucycm_read.c										\
+				src/ulogshms/ulogshms.c												\
+				src/urandom/urandom.c												\
+				src/uaverage/uaverage.c												\
+				src/umemorypool/ump_simple.c										\
+				src/uqueue/uqueue.c													\
+				src/ubuffer/ubuffer.c												\
+				src/ubuffer/ubuffer_rw.c											\
+				src/ubuffer/ubuffer_format.c										\
+				src/ubuffer/ubuffer_move.c											\
+				src/ucmdline/ucmdline.c												\
+				src/usvmesg/usvmesgc.c												\
+				src/usvmesg/usvmesgs.c												\
+				src/ubitbuffer/ubitbuffer.c											\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+target_cross	:= lib/libustandard$(CROSS_LIBRARY_SUFFIX).so
+target			:= lib/libustandard.so
+
+all:
+	gcc -g -Wall -shared -fPIC -O2 -o $(target) $(includes) $(sources)
+
+clean:
+	rm -f lib/libustandard*.so
+
+install:
+	rsync -r include/*				$(BUILD_INCLUDE)/libustandard/
+	rsync -r $(target_cross) 		$(BUILD_LIB)

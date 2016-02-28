@@ -1,0 +1,2 @@
+export CROSS_COMPILER=""
+export CROSS_LIBRARY_SUFFIX=""

@@ -1,0 +1,36 @@
+#include "ustandard/ustandard.h"
+#define COLOUR_FATAL(x)     "\e[31;1m"x"\e[0m"
+int uslog_test(void)
+{
+    int ret = 0;
+
+    printf("123\n"); printf("\e[31;1m""abc""\e[0m"); printf("456\n");
+    printf("123\n"); printf("\e[34;1m""abc""\e[0m"); printf("456\n");
+    uslog_sys_set(__vd, stdout);
+
+    printf("[->v0]");
+    ulognon("%s\n", "__v0");
+
+    printf("[->vt]");
+    ulogtst("%s\n", "__vt");
+
+    printf("[->vi]");
+    uloginf("%s\n", "__vi");
+
+    printf("[->vd]");
+    ulogdbg("%s\n", "__vd");
+
+    printf("[->ve]");
+    //ulogerr("%s\n", "__ve");
+
+    printf("[->finished]\n");
+
+    return ret;
+}
+
+
+int main()
+{
+    uslog_test();    
+    return 0;
+}

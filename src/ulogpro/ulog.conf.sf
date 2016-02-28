@@ -1,0 +1,10 @@
+[global]
+info = stderr, /tmp/info[%P]
+error = stderr, /tmp/error[%P]
+
+
+[ulogtest]
+debug = stdout, /tmp/ulogtest [%P]
+
+[streammgr]
+debug = stdout, /tmp/streammgr [%P]
