@@ -77,10 +77,10 @@ do {                                                                           \
             ulogerr("%s error : %s(%s).\n", __FUNCTION__, c, strerror(errno))
 
 #define usloge_malloc(size) \
-            ulogerr("%s malloc failed(size%u).\n", __FUNCTION__, size)
+            ulogerr("%s malloc failed(size%zd).\n", __FUNCTION__, size)
 
 #define usloge_realloc(size) \
-            ulogerr("%s realloc failed(size%u).\n", __FUNCTION__, size)
+            ulogerr("%s realloc failed(size%zd).\n", __FUNCTION__, size)
 
 #define uslog_check_arg(cond, retval) if(!(cond)) {ulogerr("%s error : invalid arg.\n", __FUNCTION__); errno = EINVAL; return retval;}
 

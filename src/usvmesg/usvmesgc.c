@@ -50,7 +50,7 @@ int usvmesgc_send(const char* sender, const char* recver,
     memcpy(msg_send.mbuf_send->mtext, p, size);
     ret = msgsnd(msg_send.msgid, msg_send.mbuf_send, size, IPC_NOWAIT);
     if(0 != ret) {
-        ulogerr("msgid:%d, mtype:%ld, size:%u.\n", msg_send.msgid, msg_send.mbuf_send->mtype, size);
+        ulogerr("msgid:%d, mtype:%ld, size:%zd.\n", msg_send.msgid, msg_send.mbuf_send->mtype, size);
         usloge_perror("send content");
         ret = -1;
         goto finished;

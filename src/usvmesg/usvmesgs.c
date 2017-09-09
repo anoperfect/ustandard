@@ -163,7 +163,7 @@ int usvmesgs_recv(__ptr_t id, struct umesg_recv_data* data, struct timeval* to)
         ssize_t size2 = msgrcv(msg_t->msgid, 
                 msg_t->mbuf_recv, header.size, header.pid, IPC_NOWAIT);
         if(size2 != header.size) {
-            ulogerr("read content error.(ssize=%d)\n", size2);
+            ulogerr("read content error.(ssize=%zd)\n", size2);
             ret = -1;
             break;
         }
@@ -172,7 +172,7 @@ int usvmesgs_recv(__ptr_t id, struct umesg_recv_data* data, struct timeval* to)
         data->sender = msg_t->sender;
         data->ptr = msg_t->mbuf_recv->mtext;
         data->size = header.size;
-        ulogdbg("usvmesgv recv : name = %s , length = %u.\n", 
+        ulogdbg("usvmesgv recv : name = %s , length = %zd.\n", 
                 data->sender, data->size);
 
         break;

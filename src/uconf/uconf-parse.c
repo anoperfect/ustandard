@@ -130,6 +130,10 @@ CONF* uconf_open(const char* path, conf_mode_e mode)
     strncpy(conf->path, path, LEN_PATH-1);
 
     ret = _uconf_parse(conf);
+    if(0 != ret) {
+        uconf_close(conf);
+        conf = NULL;
+    }
 
     return conf;
 }

@@ -89,7 +89,7 @@ DEPS            = $(patsubst %.o,%.d,$(BUILDOBJS))
 
 #注意-MD，是为了生成.d文件后，构造对.h的依赖
 #external include file define
-CFLAGS    = -O2 -Wall -MD $(foreach dir,$(INCLUDEDIR),-I$(dir))
+CFLAGS    = -O2 -Wall -Werror -MD $(foreach dir,$(INCLUDEDIR),-I$(dir))
 ARFLAGS = rc
 
 #special parameters for app

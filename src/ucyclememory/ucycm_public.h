@@ -111,7 +111,7 @@ static int _ucycm_check_const(void* addr, struct ucycm_param* param)
     }
 
     size_t size = param->size_additional_info_store - param->size_additional_info;
-    ulognon("size_check = %u.\n", size);
+    ulognon("size_check = %zd.\n", size);
     if(size > 0) {
         int i;
         for(i=0; i<param->n_data_info; i++) {

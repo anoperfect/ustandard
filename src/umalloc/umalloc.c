@@ -97,7 +97,7 @@ static int umalloc_record_add(void* ptr, size_t size,
     umalloc_lock();
     
     __log("add", ptr, file, function, line);
-    struct umalloc_node* node_new = malloc(sizeof(*node_new)); 
+    struct umalloc_node* node_new = (struct umalloc_node*)malloc(sizeof(*node_new)); 
     if(NULL != node_new) {
         node_new->ptr = ptr; 
         node_new->size      = size; 
@@ -290,9 +290,13 @@ void* urealloc(void* ptr_ori, size_t size,
 }
 
 
-int umalloc_query(char* s, size_t size)
+size_t umalloc_query(char* s, size_t size)
 {
-    int retn = 0;
+    if(NULL == s || size <= 0) {
+        return 0;
+    }
+
+    size_t retn = 0;
 
     umalloc_lock();
     s[0] = '\0';
@@ -300,15 +304,20 @@ int umalloc_query(char* s, size_t size)
 
     struct umalloc_node* node = klist.next;
     while(NULL != node) {
-        int n = snprintf(s+idx, size-idx, "\t%p %-10u   at %-36s,%-20s,%-4d\n", 
+        int n = snprintf(s+idx, size-idx, "\t%p %-10zd   at %-36s,%-20s,%-4d\n", 
                 node->ptr, node->size, node->file, node->function, node->line);
-        if(n >= size-idx-1) {
+        if(n < 0) {
+            break;
+        }
+
+        size_t sizen = (size_t)n;
+        if(sizen >= size-idx-1) {
             retn = size-1;
             break;
         }
         else {
-            idx += n;
-            retn += n;
+            idx += sizen;
+            retn += sizen;
         }
         node = node->next;
     }

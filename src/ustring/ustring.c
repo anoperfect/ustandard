@@ -54,7 +54,7 @@ char* ustrndup(const char* src, size_t n)
     size_t len_src = strlen(src);
     n = um_min(n, len_src);
     size_t size_alloc = n + 1;
-    rets = um_malloc(size_alloc);
+    rets = (char*)um_malloc(size_alloc);
     if(NULL != rets) {
         memcpy(rets, src, size_alloc-1);
         rets[size_alloc-1] = '\0';
@@ -122,7 +122,7 @@ int uchars_include_char(const char s[], size_t n, char ch)
     int ret = 0;
     errno = 0;
 
-    int i;
+    size_t i;
     for(i=0; i<n; i++)
     {
         if(ch == s[i]) {
@@ -150,7 +150,7 @@ char* ustrtrim_chars(char* s, int trim_left, int trim_right,
     int i;
 
     if(trim_right) {
-        for(i=len_s-1; i>=0; i--) {
+        for(i=(int)len_s-1; i>=0; i--) {
             if(uchars_include_char(chars, n, s[i])) {
                 len_right ++;
                 s[i] = '\0';
@@ -162,7 +162,7 @@ char* ustrtrim_chars(char* s, int trim_left, int trim_right,
     }
 
     if(trim_left) {
-        for(i=0; i<len_s && s[i] != '\0'; i++) {
+        for(i=0; i<(int)len_s && s[i] != '\0'; i++) {
             if(uchars_include_char(chars, n, s[i])) {
                 len_left ++;
             }
@@ -173,7 +173,7 @@ char* ustrtrim_chars(char* s, int trim_left, int trim_right,
 
         if(len_left > 0) {
             size_t len_ns = len_s - len_left - len_right;
-            for(i=0; i<len_ns; i++) {
+            for(i=0; i<(int)len_ns; i++) {
                 s[i] = s[i+len_left];
             }
 
@@ -605,8 +605,8 @@ void* umemmove_left(void* p, size_t size_src, size_t size_dest)
     if(NULL != p && size_src > size_dest) {
         int i;
         size_t offset = size_src - size_dest;
-        for(i=0; i<size_dest; i++) {
-            ((unsigned char*)p)[i] = ((unsigned char*)(p+offset))[i];
+        for(i=0; i<(int)size_dest; i++) {
+            ((unsigned char*)p)[i] = ((unsigned char*)p+offset)[i];
         }
     }
 
@@ -765,9 +765,39 @@ finish:
 
 
 
+struct ureplace_pattarn {
+    long  pos;
+    size_t len;
+
+    void* to;
+    size_t len_to;
+};
+
+
+int ureplace(void* src, size_t len_src, 
+    		void** ppdest, size_t* len_dest, 
+    		struct ureplace_pattarn* replaces, int n)
+{
+    int ret = 0;
+
+	
+
+	int i;
+    for(i=0; i<n; i++) {
+		
+
+    }
+
+    
+    
+
+
+    
 
 
 
+    return ret;
+}
 
 
 

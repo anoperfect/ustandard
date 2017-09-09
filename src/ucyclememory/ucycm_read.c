@@ -37,7 +37,7 @@ struct ucycm_read* ucycmr_create(void* addr, key_t key, size_t size_total,
         cmr->key = key;
         addr = _shm_attach(key, size_total, &cmr->shm_id);
         if(NULL == addr) {
-            ulogerr("shared memory attach error(key=0x%x, size=%u).\n", 
+            ulogerr("shared memory attach error(key=0x%x, size=%zd).\n", 
                     key, size_total);
             um_free(cmr);
             cmr = NULL;
@@ -55,7 +55,7 @@ struct ucycm_read* ucycmr_create(void* addr, key_t key, size_t size_total,
 
     /* get the param. */
     memcpy(&cmr->cm_param, addr + __offset_area_param, sizeof(cmr->cm_param));
-    ulogdbg("key: 0x%x, size: %u, addr:%p, n:%ld, size_addi:%u, size_addi_s:%u, name:%s, enabled_check_sum:%d, to_max:%lu:%06lu, usec_sleep:%u, nmax=%lu.\n", 
+    ulogdbg("key: 0x%x, size: %zd, addr:%p, n:%ld, size_addi:%zd, size_addi_s:%zd, name:%s, enabled_check_sum:%d, to_max:%lu:%06lu, usec_sleep:%u, nmax=%lu.\n", 
             cmr->cm_param.key, 
             cmr->cm_param.size_total, 
             cmr->cm_param.addr, 
@@ -253,7 +253,7 @@ void* _shm_attach(key_t key, size_t size, int* pshm_id)
     void* addr = NULL;
     int shm_id;
 
-    ulogdbg("key=0x%x, size=%d.\n", key, size);
+    ulogdbg("key=0x%x, size=%zd.\n", key, size);
     shm_id=shmget(key, size, 0600 | IPC_EXCL );
 
     if(shm_id==-1)

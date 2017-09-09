@@ -82,7 +82,7 @@ struct uslog_data* uslog_init(void)
 {
     struct uslog_data* ret_logctx = NULL;
     struct uslog_data* logctx = NULL;
-    logctx = malloc(sizeof(struct uslog_data));
+    logctx = (struct uslog_data*)malloc(sizeof(struct uslog_data));
     if(NULL != logctx) {
         memset(logctx, 0, sizeof(sizeof(struct uslog_config)*MAX_SLOG));
         _uslog_config_init(logctx);
@@ -244,7 +244,7 @@ int uslog_fprintf(struct uslog_data** logctx, int level,
 
     if(!is_enabled) {
         retn = 0;
-        goto finish;
+        return retn;
     }
 
     #define LEN_STR     (1280)
@@ -335,7 +335,7 @@ int uslog_fprintf(struct uslog_data** logctx, int level,
     #undef LEN_STR
 
     retn = fprintf(config->fp, "%s", str);
-finish:
+
     return retn;
 }
 

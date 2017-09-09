@@ -124,7 +124,7 @@ static int ulogshms_add(struct ulogshms* s, const void* p, size_t size)
             s->shm_info->idx_block      = s->info.idx_block ;
             s->shm_info->idx            = s->info.idx ;
 
-            ulogdbg("write idx_block : %d.\n", s->info.idx_block);
+            ulogdbg("write idx_block : %zd.\n", s->info.idx_block);
         }
 
         ulogdbg("add at %p.\n", 
@@ -139,7 +139,7 @@ static int ulogshms_add(struct ulogshms* s, const void* p, size_t size)
     }
 
     struct ulogshms_info* shm_info = s->shm_info;
-    ulogdbg("shm_info : nblock=%u, size_block=%u, idx_block=%u, idx=%u, finish_block=%u.\n", shm_info->nblock, shm_info->size_block, shm_info->idx_block, shm_info->idx, shm_info->finish_block);
+    ulogdbg("shm_info : nblock=%zd, size_block=%zd, idx_block=%zd, idx=%zd, finish_block=%zd.\n", shm_info->nblock, shm_info->size_block, shm_info->idx_block, shm_info->idx, shm_info->finish_block);
 
     return ret;
 }
@@ -230,7 +230,7 @@ void* _shm_create(key_t key, size_t size, int* pshm_id)
     void* addr = NULL;
     int shm_id;
 
-    ulogdbg("key=0x%x, size=%d.\n", key, size);
+    ulogdbg("key=0x%x, size=%zd.\n", key, size);
     shm_id=shmget(key, size, 0600 | IPC_CREAT);
 
     if(shm_id==-1) {
@@ -279,7 +279,7 @@ void* _shm_attach(key_t key, size_t size, int* pshm_id)
     void* addr = NULL;
     int shm_id;
 
-    ulogdbg("key=0x%x, size=%d.\n", key, size);
+    ulogdbg("key=0x%x, size=%zd.\n", key, size);
     shm_id=shmget(key, size, 0600);
 
     if(shm_id==-1) {
@@ -334,7 +334,7 @@ static int ulogshmc_mem(const void* p, size_t size,
 {
     int ret = 0;
 
-    ulogdbg("ulogshmc_mem %p, size%u.\n", p, size);
+    ulogdbg("ulogshmc_mem %p, size%zd.\n", p, size);
     const unsigned char* s = p;
     const unsigned char* s_end = p + size;
     unsigned short int n;
@@ -349,7 +349,7 @@ static int ulogshmc_mem(const void* p, size_t size,
                 s += n;
             }
             else {
-                ulogerr("n=%d, left=%d.\n", n, s_end - s);
+                ulogerr("n=%d, left=%zd.\n", n, s_end - s);
             }
         }
         else if(0 == memcmp(s, LOGSHMS_HEADER_LINE, LOGSHMS_HEADER_LEN)) {
@@ -371,7 +371,7 @@ static int ulogshmc_mem(const void* p, size_t size,
                 s += n;
             }
             else {
-                ulogerr("n=%d, left=%d.\n", n, s_end - s);
+                ulogerr("n=%d, left=%zd.\n", n, s_end - s);
             }
         }
         else {
@@ -419,7 +419,7 @@ int ulogshmc_func_data(char name, const void* p, size_t size)
 {
     int ret = 0;
 
-    fprintf(stdout, "data : %c, size : %6d .\n", name, size);
+    fprintf(stdout, "data : %c, size : %6zd .\n", name, size);
 
     return ret;
 }
@@ -454,7 +454,7 @@ int ulogshmc(key_t key, size_t size,
 
     struct ulogshms_info* shm_info;
     shm_info = addr_shm;
-    ulogdbg("shm_info : nblock=%u, size_block=%u, idx_block=%u, idx=%u, finish_block=%u.\n", shm_info->nblock, shm_info->size_block, shm_info->idx_block, shm_info->idx, shm_info->finish_block);
+    ulogdbg("shm_info : nblock=%zd, size_block=%zd, idx_block=%zd, idx=%zd, finish_block=%zd.\n", shm_info->nblock, shm_info->size_block, shm_info->idx_block, shm_info->idx, shm_info->finish_block);
     shm_info->reading = 1;
     memcpy(content, addr_shm, size);
     shm_info->reading = 0;
@@ -463,7 +463,7 @@ int ulogshmc(key_t key, size_t size,
     addr_shm = NULL;
 
     shm_info = content;
-    ulogdbg("shm_info : nblock=%u, size_block=%u, idx_block=%u, idx=%u, finish_block=%u.\n", shm_info->nblock, shm_info->size_block, shm_info->idx_block, shm_info->idx, shm_info->finish_block);
+    ulogdbg("shm_info : nblock=%zd, size_block=%zd, idx_block=%zd, idx=%zd, finish_block=%zd.\n", shm_info->nblock, shm_info->size_block, shm_info->idx_block, shm_info->idx, shm_info->finish_block);
     ulogdbg("content addr = %p.\n", content);
 
     int idxs;

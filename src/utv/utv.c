@@ -231,14 +231,12 @@ int utv_tostr_r(char*s, size_t size, const struct timeval* tv)
 
 const char* utv_tostr(const struct timeval* tv)
 {
-    char* rets = "";
-
     #define NUM    6 
     #define LEN_STR_TV_PRINTF     64
     static char kstr_tv_printf[NUM][LEN_STR_TV_PRINTF] = {{0}};
     static int kidx = 0;
 
-    rets = kstr_tv_printf[kidx];
+    char *rets = kstr_tv_printf[kidx];
     kidx = (kidx+1)%NUM;
     utv_tostr_r(rets, LEN_STR_TV_PRINTF, tv);
     #undef NUM

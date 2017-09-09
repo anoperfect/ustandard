@@ -1,4 +1,0 @@
-src=1.c 2.c
-all:
-	obj=$(patsubst %.c,%.o,$(src))
-	echo $(obj)

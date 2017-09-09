@@ -45,12 +45,12 @@ struct ucycm* ucycm_create(void* addr, key_t key, size_t size_total,
 {
     struct ucycm* cm = NULL;
 
-    int size_additional_info_store = __align(size_additional_info);
+    size_t size_additional_info_store = __align(size_additional_info);
     size_t offset_data_area = __offset_area_data(n_data_info, size_additional_info_store);
-    ulogdbg("offset_data_area(%u) = %u + %lu * (%u + %u).\n", 
+    ulogdbg("offset_data_area(%zd) = %zd + %zd * (%zd + %zd).\n", 
             offset_data_area, __offset_area_infos, n_data_info, sizeof(struct ucycm_segment),size_additional_info_store);
     if(size_total <= offset_data_area) {
-        ulogerr("total size not enough. at lease %u.\n", offset_data_area);
+        ulogerr("total size not enough. at lease %zd.\n", offset_data_area);
         return cm;
     }
 
@@ -80,7 +80,7 @@ struct ucycm* ucycm_create(void* addr, key_t key, size_t size_total,
     cm->cm_param.size_total = size_total;
 
     /* copy the create param. */
-    ulogdbg("sizeof(cm_param) = %u.\n", sizeof(cm->cm_param));
+    ulogdbg("sizeof(cm_param) = %zd.\n", sizeof(cm->cm_param));
     cm->cm_param.n_data_info                = n_data_info;
     cm->cm_param.size_additional_info       = size_additional_info;
     cm->cm_param.size_additional_info_store = size_additional_info_store;
@@ -166,7 +166,7 @@ int ucycm_add(struct ucycm* cm,
 
     cm->sn ++;
 
-    ulogdbg("ucycm_add : [%lu] %u.\n", cm->sn, size);
+    ulogdbg("ucycm_add : [%lu] %zd.\n", cm->sn, size);
     ulogdbg("before added : size_data_area = %lu,offset_add_data = %lu.\n", 
             cm->size_data_area, cm->offset_add_data);
 
@@ -184,10 +184,10 @@ int ucycm_add(struct ucycm* cm,
         cm->sn_cycle = cm->sn;
     }
     else { 
-        struct ucycm_segment* s_info_prev; 
-        s_info_prev = __get_segment_info(cm, cm->sn-1);
         if((cm->size_data_area - cm->offset_add_data) >= (size+size_checksum)) {
             #if UCYCM_COUNT_SN_MIN
+        	struct ucycm_segment* s_info_prev; 
+            s_info_prev = __get_segment_info(cm, cm->sn-1);
             int i;
             struct ucycm_segment* s_info_i; 
             for(i=s_info_prev->sn_min; i<cm->sn_cycle; i++) {
@@ -302,7 +302,7 @@ void* _shm_create(key_t key, size_t size, int* pshm_id)
     void* addr = NULL;
     int shm_id;
 
-    ulogdbg("key=0x%x, size=%d.\n", key, size);
+    ulogdbg("key=0x%x, size=%zd.\n", key, size);
     shm_id=shmget(key, size, 0600 | IPC_CREAT);
 
     if(shm_id==-1) {
@@ -350,7 +350,7 @@ int _copy_data(void* dest, size_t size_dest,
 {
     int ret = 0;  
 
-    ulogdbg("_copy_data start. to %p with %u.\n", dest, size);
+    ulogdbg("_copy_data start. to %p with %zd.\n", dest, size);
     if(NULL != ss) {
         size_t size_copy;
         int ret = ustrset_combine(dest, size_dest, &size_copy, ss);

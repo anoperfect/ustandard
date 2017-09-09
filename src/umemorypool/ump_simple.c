@@ -18,7 +18,8 @@ struct ump_simple {
 
     int                     total_nodes;
     int                     num_nodes;
-    struct ump_simple_node* nodes; size_t      offset_content;
+    struct ump_simple_node* nodes; 
+    size_t      offset_content;
     size_t      size_content;
 };
 
@@ -33,9 +34,6 @@ struct ump_simple* ump_simple_create(size_t total)
         ump = NULL;    
         return NULL;
     }
-
-    ulogdbg("sizeof(struct ump_simple)=%u, sizeof(struct ump_simple_node)=%u.\n", 
-            sizeof(struct ump_simple), sizeof(struct ump_simple_node)); 
 
     void* p = um_malloc(total);
     if(NULL == p) {
@@ -56,7 +54,7 @@ struct ump_simple* ump_simple_create(size_t total)
     ump->offset_content = sizeof(struct ump_simple) + 
             ump->total_nodes * sizeof(struct ump_simple_node);
     ump->size_content = ump->total - ump->offset_content;
-    ulogdbg("offset_content = %u, size_content = %u.\n", 
+    ulogdbg("offset_content = %zd, size_content = %zd.\n", 
             ump->offset_content, ump->size_content);
 
     /* set the first node. */

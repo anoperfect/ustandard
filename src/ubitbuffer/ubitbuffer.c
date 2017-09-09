@@ -9,7 +9,6 @@ int ubit_get(const void* ptr, unsigned int idx)
     unsigned int bit_idx = (8 - 1) - idx % 8 ;
     unsigned char uch = ((unsigned char*)ptr)[uchar_idx];
     retb = uch & (1<<bit_idx) ? 1 : 0;
-    ulogdbg("idx=%2d, v=%d.\n", idx, retb);
 
     return retb;
 }
@@ -22,7 +21,6 @@ uint64_t ubit_gets(const void* ptr, unsigned int idx, unsigned int len)
     int i;
     for(i=0; i<len; i++) {
         retv = (retv << 1) | ubit_get(ptr, idx + i);
-        ulogdbg("retv = %llu.\n", retv);
     }
 
     return retv;
@@ -178,11 +176,11 @@ int64_t ubit_parse_r(struct ubit_parse* parse, const char* name, size_t length,
             break;
 
             case ubit_output_type_16:
-            snprintf(dest, size, "0x%llx", value);
+            snprintf(dest, size, "0x%llx", (unsigned long long int)value);
             break;
 
             case ubit_output_type_10:
-            snprintf(dest, size, "%llu", value);
+            snprintf(dest, size, "%llu", (unsigned long long int)value);
             break;
 
             default:
@@ -457,7 +455,7 @@ int ubit_get_by_length1(void* ptr, size_t size_ptr, int n, int lens[])
             r = r*2 + s[j] ;           
         }
         s += lens[i];
-        printf("[%d] 0x%llx\n", i, r);
+        printf("[%d] 0x%llx\n", i, (unsigned long long int)r);
     }
 
     return ret;

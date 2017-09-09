@@ -151,11 +151,11 @@ int _ubuffer_rw_expand(struct ubuffer_rw* buffer_rw, size_t size_need)
             buffer_rw->total    = size_realloc;
         }
         else {
-            ulogerr("%s realloc error(%u).\n", __FUNCTION__, size_realloc);
+            ulogerr("%s realloc error(%zd).\n", __FUNCTION__, size_realloc);
             ret = -1;
         }
     }
-    ulogerr("expand to %u.\n", buffer_rw->total);
+    ulogerr("expand to %zd.\n", buffer_rw->total);
 
     return ret;
 }

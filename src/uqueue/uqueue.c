@@ -29,7 +29,7 @@ struct uqueue* uqueue_create(int total, size_t size, udata_copy copy)
         queue->copy         = copy;
     }
     else {
-        ulogerr("%s um_malloc(%u) error.\n",__FUNCTION__,sizeof(*queue) + total*size);
+        ulogerr("%s um_malloc(%zd) error.\n",__FUNCTION__,sizeof(*queue) + total*size);
     }
 
     return queue;

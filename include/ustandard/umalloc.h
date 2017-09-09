@@ -28,7 +28,7 @@ void* urealloc(void* ptr, size_t size,
 #endif
 
 
-int umalloc_query(char* s, size_t size);
+size_t umalloc_query(char* s, size_t size);
 int umalloc_query_clear(void);
 int umalloc_enable(int set);
 
