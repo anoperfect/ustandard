@@ -18,7 +18,7 @@ struct ustrseg
     const void*     buf;
     size_t          size;
 };
-
+ 
 int ustrset_num(const struct ustrset* ss);
 struct ustrseg* ustrset_getseg(const struct ustrset* ss, int idx);
 

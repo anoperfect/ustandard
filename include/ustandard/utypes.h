@@ -24,15 +24,22 @@
 
 
 typedef unsigned char uchar_t;
-#if 0
-typedef long long int64_t;
-typedef unsigned long long uint64_t;
-#endif
 
 
 struct udata_const {
     const void* ptr;
     size_t      size;
+};
+
+
+
+struct uvdata{
+    void* p;
+
+    bool pointer_on_use; /* indicate pointer p on use, or payload on use. */
+    
+    size_t size;
+    char payload[0];
 };
 
 
@@ -51,10 +58,22 @@ struct udata_const {
 
 
 
+struct urange {
+    long location;
+    long length;
+};
 
 
 
 
+
+/*
+    a buffer segment without modify permit. 
+ */
+struct ucbuf {
+    const void*     p;  /* addr. */
+    size_t          size;    
+};
 
 
 

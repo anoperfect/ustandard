@@ -12,5 +12,39 @@ int ubuffer_split_by_char(const void* src, size_t size,
         struct ubuffer_data* data, 
         int nmax);
 
+
+/* not test. */
+void* ubuf_move_left(void* p, size_t size_src, size_t size_dest);
+
+
+void* ubuf_move_right(void* p, size_t size, size_t n);
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* use um_free(*ppdest) to free the return dest value. */
+int ubuffer_replace(const void* src, size_t len_src, 
+    		void** ppdest, size_t* len_dest, 
+            struct urange* ranges, long nranges,
+            struct ucbuf* bufs_replace, long nbufs_replace);
+
+
+
+
+
+
+
+
+
+
 __END_DECLS
 #endif//ubuffer.h

@@ -7,6 +7,7 @@ __BEGIN_DECLS
 
 #define um_malloc(size)         umalloc(size, __FILE__, __FUNCTION__, __LINE__)
 #define um_free(ptr)            ufree(ptr, __FILE__, __FUNCTION__, __LINE__)
+#define um_free_check(ptr)      if(ptr) {ufree(ptr, __FILE__, __FUNCTION__, __LINE__); ptr = NULL;}
 #define um_realloc(ptr, size)   urealloc(ptr, size, __FILE__, __FUNCTION__, __LINE__)
 
 void* umalloc(size_t size, 
@@ -33,6 +34,10 @@ int umalloc_query_clear(void);
 int umalloc_enable(int set);
 
 #define um_umalloc_perror(size) ulogerr("umalloc(%u) error at %s:%u.\n", size, __FILE__, __LINE)
+
+
+
+
 
 
 

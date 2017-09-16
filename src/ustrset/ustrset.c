@@ -19,6 +19,12 @@ struct ustrset
 
 
 /* not implement buffer and segs expand function. */
+/*
+    num : prealloc number of segments. 
+max_num : expand limit.
+size_buf: prealloc buffer using for dup.
+ max_buf: expand limit buffer using for dup.
+ */
 struct ustrset* ustrset_create(int num, int max_num, size_t size_buf, size_t max_buf)
 {
     struct ustrset* ss = um_malloc(sizeof(struct ustrset));

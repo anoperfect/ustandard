@@ -5,9 +5,15 @@ __BEGIN_DECLS
 
 char *ustrncpy(char *dest, size_t size_dest, const char *src, size_t n);
 char *ustrcpy(char *dest, size_t size_dest, const char *src);
+
+/* return value should use um_free(p) to free, not free(p). */
 char* ustrndup(const char* src, size_t n);
+
+/* return value should use um_free(p) to free, not free(p). */
 char* ustrdup(const char* src);
 
+/* return value should use um_free(p) to free, not free(p). */
+char* ustrdup_sub(const char* src, struct urange range);
 
 
 
@@ -62,9 +68,23 @@ char ustrtail(const char* s);
 
 
 
+/* find. */
+/*
+    return : found ranges. 
+            -1: input value invalid. 
+             0: not found.
+           > 0: found number. it would not larger then nmax. so if return value equal to nmax, maybe there're more matched pattern.
+ */
+long ustr_find(const char* s, 
+        const char* needle, 
+        struct urange* range,
+        long nmax);
 
-void* umemmove_left(void* p, size_t size_src, size_t size_dest);
-void* umemmove_right(void* p, size_t size_src, size_t size_dest);
+
+
+
+
+
 
 
 

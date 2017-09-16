@@ -1,4 +1,4 @@
-#include "ustandard/ustandard.h"
+#include "ustandard/ustandard_sys.h"
 #include "ustandard/udevelop.h"
 #include "ustandard/ustring.h"
 char *ustrncpy(char *dest, size_t size_dest, const char *src, size_t n)
@@ -44,7 +44,21 @@ char *ustrcpy(char *dest, size_t size_dest, const char *src)
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*strdup.*/
+/* return value should use um_free(p) to free, not free(p). */
 char* ustrndup(const char* src, size_t n)
 {
     char* rets = NULL;
@@ -67,6 +81,7 @@ char* ustrndup(const char* src, size_t n)
 }
 
 
+/* return value should use um_free(p) to free, not free(p). */
 char* ustrdup(const char* src)
 {
     char* rets = NULL;
@@ -75,6 +90,16 @@ char* ustrdup(const char* src)
     return rets;
 }
 
+
+/* return value should use um_free(p) to free, not free(p). */
+char* ustrdup_sub(const char* src, struct urange range)
+{
+    uslog_check_arg(NULL != src,           NULL);
+    uslog_check_arg(range.location >= 0 && range.length > 0 && (range.location + range.length) <= strlen(src), NULL);
+
+    char* substring = ustrndup(src+range.location, range.length);
+    return substring;
+}
 
 
 
@@ -600,34 +625,6 @@ char ustrtail(const char* s)
 
 
 
-void* umemmove_left(void* p, size_t size_src, size_t size_dest)
-{
-    if(NULL != p && size_src > size_dest) {
-        int i;
-        size_t offset = size_src - size_dest;
-        for(i=0; i<(int)size_dest; i++) {
-            ((unsigned char*)p)[i] = ((unsigned char*)p+offset)[i];
-        }
-    }
-
-    return p;
-}
-
-
-void* umemmove_right(void* p, size_t size, size_t n)
-{
-    if(NULL != p && size > 0 && n > 0) {
-        int i;
-        for(i=size-1; i>=0; i--) {
-            ((unsigned char*)p)[i+n] = ((unsigned char*)p)[i];
-        }
-    }
-
-    return p;
-}
-
-
-
 
 
 
@@ -734,70 +731,54 @@ finish:
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct ureplace_pattarn {
-    long  pos;
-    size_t len;
-
-    void* to;
-    size_t len_to;
-};
-
-
-int ureplace(void* src, size_t len_src, 
-    		void** ppdest, size_t* len_dest, 
-    		struct ureplace_pattarn* replaces, int n)
+/*
+    return : found ranges. 
+            -1: input value invalid. 
+             0: not found.
+           > 0: found number. it would not larger then nmax. so if return value equal to nmax, maybe there're more matched pattern.
+ */
+long ustr_find(const char* s, 
+        const char* needle, 
+        struct urange* range,
+        long nmax)
 {
-    int ret = 0;
+    uslog_check_arg(NULL != s,          -1);
+    uslog_check_arg(NULL != needle,     -1);
+    uslog_check_arg(strlen(needle)>0,   -1);
+    uslog_check_arg(NULL != range,      -1);
+    uslog_check_arg(nmax > 0,           -1);
 
-	
+    int retn = 0;
 
-	int i;
-    for(i=0; i<n; i++) {
-		
+    const char* t = s;
+    size_t len_needle = strlen(needle);
 
+    while(1) {
+        char* tmp = strstr(t, needle);
+        if(NULL == tmp) {
+            break;
+        }
+
+        if(retn < nmax) {
+            range[retn].location = tmp - s;
+            range[retn].length = len_needle;
+
+            retn ++;
+            t = tmp + len_needle;
+        }
+        else {
+            break;
+        }
     }
 
-    
-    
-
-
-    
-
-
-
-    return ret;
+    return retn;
 }
+
+
+
+
+
+
 
 
 
