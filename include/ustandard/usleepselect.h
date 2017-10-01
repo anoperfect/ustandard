@@ -7,5 +7,5 @@ int usleepselect(int usec);
 
 
 
-#endif//__USLEEPSELECT_H__
+#endif /* usleepselect.h */
 

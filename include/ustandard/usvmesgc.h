@@ -8,4 +8,4 @@ int usvmesgc_send(const char* sender, const char* recver,
 
 
 __END_DECLS
-#endif//usvmesgc.h
+#endif /* usvmesgc.h */

@@ -42,44 +42,8 @@ TARGETSLIBS    = libmk.so
 VPATH             = $(shell ls -AxR $(SRCDIR)|grep ":"|grep -v "\.svn"|tr -d ':')
 SOURCEDIRS    = $(VPATH)
 #SOURCES     = $(foreach subdir,$(SOURCEDIRS),$(wildcard $(subdir)/*.c))
-SOURCES		= 																			\
-																						\
-				./src/uslog/uslog.c														\
-				./src/udebug/udebug.c													\
-				./src/umalloc/umalloc.c													\
-				./src/ustring/ustring.c													\
-				./src/utv/utv.c 														\
-				./src/usleep/usleepselect.c												\
-				./src/ustrset/ustrset.c													\
-				./src/upcsem/upcsem.c													\
-				./src/uproclock/uproclock.c												\
-				./src/uchecksum/umd5.c													\
-				./src/uchecksum/ucrc.c													\
-				./src/ufile/ufile.c														\
-				./src/uconf/uconf-parse.c												\
-				./src/usystemvs/usystemvs.c												\
-				./src/udatetime/udatetime.c												\
-				./src/upid/upid.c														\
-				./src/ukeyword/ukeyword.c												\
-				./src/ubacktrace/ubacktrace.c											\
-				./src/ustdvalue/ustdvalue.c												\
-				./src/ucyclememory/ucycm.c												\
-				./src/ucyclememory/ucycm_read.c											\
-				./src/ulogshms/ulogshms.c												\
-				./src/urandom/urandom.c													\
-				./src/uaverage/uaverage.c												\
-				./src/umemorypool/ump_simple.c											\
-				./src/uqueue/uqueue.c													\
-				./src/ubuffer/ubuffer.c													\
-				./src/ubuffer/ubuffer_rw.c												\
-				./src/ubuffer/ubuffer_format.c											\
-				./src/ubuffer/ubuffer_move.c											\
-				./src/ucmdline/ucmdline.c												\
-				./src/usvmesg/usvmesgc.c												\
-				./src/usvmesg/usvmesgs.c												\
-				./src/ubitbuffer/ubitbuffer.c											\
-				./src/ulinklist/ulinklist.c												\
-
+SOURCES=
+include build/mk.src.inc
 
 #所有目标文件.o（含路径）放入BUILDOBJS，注意它们的路径已经是build了。
 SRCOBJS  = $(patsubst %.c,%.o,$(SOURCES))
@@ -90,7 +54,7 @@ DEPS            = $(patsubst %.o,%.d,$(BUILDOBJS))
 
 #注意-MD，是为了生成.d文件后，构造对.h的依赖
 #external include file define
-	CFLAGS    = -O2 -Wall -Werror -MD $(foreach dir,$(INCLUDEDIR),-I$(dir))
+CFLAGS    =-std=c99 -O2 -Wall -Werror -MD $(foreach dir,$(INCLUDEDIR),-I$(dir))
 ARFLAGS = rc 
 #special parameters for app
 CFLAGS    +=
@@ -98,7 +62,7 @@ CFLAGS    +=
 #LDFLAGS指明所有-llibxx，libxx.a应该放到lib下，当然也可以添加.so。Xlinker是为了
 #在提供多个.a时，未知它们之间的依赖顺序时，自动查找依赖顺序
 #c file compile parameters and linked libraries
-CPPFLAGS = 
+CPPFLAGS =
 LDFLAGS  =
 XLDFLAGS = -Xlinker "-(" $(LDFLAGS) -Xlinker "-)"
 LDLIBS   += -L $(LIBDIR) 

@@ -102,7 +102,6 @@ static int ulogshms_add(struct ulogshms* s, const void* p, size_t size)
 {
     int ret = 0;
 
-    //_ulogshms_p(p, size);
 
     if(NULL != s && NULL != p && size <= s->info.size_block) {
         /* if client reading. wait at most 15ms. */
@@ -110,7 +109,7 @@ static int ulogshms_add(struct ulogshms* s, const void* p, size_t size)
         while(s->shm_info->reading && t -- ) {
             usleep(5*1000);
         }
-        //s->shm_info->reading = 0;
+        
 
         if(size + s->info.idx > s->info.size_block) {
             memset(s->addr + s->info.idx_block*s->info.size_block + s->info.idx, 0, 
@@ -499,6 +498,7 @@ int ulogshmc(key_t key, size_t size,
 finish:
     return ret;
 }
+
 
 
 

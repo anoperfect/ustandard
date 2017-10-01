@@ -18,5 +18,5 @@ int upcsem_sub(int semid, int val);
 
 __END_DECLS
 
-#endif//__UPCSEM_H__
+#endif /* upcsem.h */
 

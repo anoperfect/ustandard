@@ -46,8 +46,7 @@ static struct timeval ktv_start = {0, 0};
 
 #define MAX_THREADS     1024
 
-struct ubacktarce_threads
-{
+struct ubacktarce_threads {
     int num;
     pthread_t   pth[MAX_THREADS];   
     int         level[MAX_THREADS];
@@ -83,6 +82,7 @@ void ubacktrace_get_thread_info(char* dest, size_t size, int** pplevel)
     /* not found. */
     if(1 == found) {
         snprintf(dest, size, "%s.%d", kdest, i);
+        snprintf(dest, size, "%s_%d_%lx.log", kdest, getpid(), pth);
         *pplevel = &kthreads.level[i];
     }
     else {
@@ -91,6 +91,7 @@ void ubacktrace_get_thread_info(char* dest, size_t size, int** pplevel)
             kthreads.level[kthreads.num]    = 0;
             
             snprintf(dest, size, "%s.%d", kdest, kthreads.num);
+            snprintf(dest, size, "%s_%d_%lx.log", kdest, getpid(), pth);
             *pplevel = &kthreads.level[kthreads.num];
 
             kthreads.num ++;
@@ -98,6 +99,7 @@ void ubacktrace_get_thread_info(char* dest, size_t size, int** pplevel)
         }
         else {
             snprintf(dest, size, "%s.%d", kdest, -1);
+            snprintf(dest, size, "%s_%d_%lx.log", kdest, getpid(), pth);
             *pplevel = &kthreads.level[kthreads.num];
         }
     }
@@ -119,7 +121,7 @@ void ubacktrace_set(const char* pathname)
 int ubacktrace_enter(const char* name, const char* file, int line)
 {
     ubacktrace_init();
-if(kstd_pid != getpid()) return 0;
+
     struct timeval tv = ubacktrace_timeval(&ktv_start);
 
     char dest[LEN_PATH] = {0};
@@ -131,6 +133,7 @@ if(kstd_pid != getpid()) return 0;
         return 0;
     }
 
+    printf("open %s\n", dest);
     int i;
     for(i=0; i<*level; i++) {
         fwrite("\t", 1, 1, fp);

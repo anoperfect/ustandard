@@ -78,7 +78,7 @@ static int _ucycm_check_const(void* addr, struct ucycm_param* param)
 
     #if UCYCM_NO_LOG
     return ret;
-    #endif//UCYCM_NO_LOG
+    #endif
 
     ret = _uchar_array_check(addr, '@', ucycm_size_reserve);
     if(0 != ret) {
@@ -117,7 +117,7 @@ static int _ucycm_check_const(void* addr, struct ucycm_param* param)
         for(i=0; i<param->n_data_info; i++) {
             struct ucycm_segment* shared_info = __get_shared_segment_info(addr, param->n_data_info, param->size_additional_info, i);
             ulognon("shared_info=%p.\n", shared_info);
-            //ret = _uchar_array_check((void*)(shared_info + 1) - size, 's', size);
+
             ret = _uchar_array_check((void*)(shared_info)+ (sizeof(struct ucycm_segment)+(param->size_additional_info)), 's', size);
                 
             if(0 != ret) {
@@ -134,8 +134,3 @@ static int _ucycm_check_const(void* addr, struct ucycm_param* param)
 finished:
     return ret;
 }
-
-
-
-
-

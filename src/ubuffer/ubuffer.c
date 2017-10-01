@@ -66,31 +66,51 @@ void* ubuf_move_right(void* p, size_t size, size_t n)
 
 
 
+/*
+    return : found ranges. 
+            -1: input value invalid. 
+             0: not found.
+           > 0: found number. it would not larger then nmax. so if return value equal to nmax, maybe there're more matched pattern.
+ */
+long ubuffer_find(const void* s, size_t size, 
+        const char* needle, size_t size_needle, 
+        struct urange* range,
+        long nmax)
+{
+    uslog_check_arg(NULL != s,          -1);
+    uslog_check_arg(NULL != needle,     -1);
+    uslog_check_arg(NULL != range,      -1);
+    uslog_check_arg(nmax > 0,           -1);
 
+    long retn = 0;
 
+    const void* t = s;
+    size_t sizet = size;
 
+    while(1) {
+        if(sizet < size_needle) {
+            break;
+        }
 
+        void* tmp = memmem(t, sizet, needle, size_needle);
+        if(NULL == tmp) {
+            break;
+        }
 
+        if(retn < nmax) {
+            range[retn].location = tmp - s;
+            range[retn].length = size_needle;
 
+            retn ++;
+            t = tmp + size_needle;
+        }
+        else {
+            break;
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return retn;
+}
 
 
 void _ubufs_add(struct ucbuf* bufs, long total, long* pnumber, struct ucbuf add)
@@ -109,10 +129,12 @@ void _ubufs_add(struct ucbuf* bufs, long total, long* pnumber, struct ucbuf add)
 }
 
 
-void _ubuf_dup_from_bufs(
+int ubuf_dup_from_bufs(
     		void** ppdest, size_t* psize, 
             struct ucbuf* bufs, long num)
 {
+    int ret = 0;
+
     *psize = 0;
 
     int i;
@@ -121,13 +143,41 @@ void _ubuf_dup_from_bufs(
     }
 
     *ppdest = um_malloc(*psize);
-
-    size_t loc = 0;
-    for(i=0; i<num; i++) {
-        memcpy((*ppdest) + loc, bufs[i].p, bufs[i].size);
-        loc += bufs[i].size;
+    if(*ppdest) {
+        size_t loc = 0;
+        for(i=0; i<num; i++) {
+            memcpy((*ppdest) + loc, bufs[i].p, bufs[i].size);
+            loc += bufs[i].size;
+        }
     }
+    else {
+        ret = -1;
+    }
+
+    return ret;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* use um_free(*ppdest) to free the return dest value. */
@@ -144,7 +194,16 @@ int ubuffer_replace(const void* src, size_t len_src,
     long num = 0;
     long total = (2*nranges + 1);
     struct ucbuf* bufs = um_malloc(sizeof(*bufs) * total);
-    
+
+    /* if no ranges, return the dup buffer. */
+    if(0 == nranges) {
+        *ppdest = um_malloc(len_src);
+        *len_dest = len_src;
+        memcpy(*ppdest, src, len_src);
+
+        return ret;
+    }
+
 	int i;
     for(i=0; i<nranges; i++) {
         if((ranges[i].location + ranges[i].length) > len_src) {
@@ -193,16 +252,12 @@ int ubuffer_replace(const void* src, size_t len_src,
     }
 
     if(0 == ret) {
-        _ubuf_dup_from_bufs(ppdest, len_dest, bufs, num);
+        ret = ubuf_dup_from_bufs(ppdest, len_dest, bufs, num);
     }
     um_free_check(bufs);
 
     return ret;
 }
-
-
-
-
 
 
 

@@ -26,4 +26,4 @@ int ustrset_fwrite(const struct ustrset* ss, FILE* fp);
 
 __END_DECLS
 
-#endif//__USTRSET_H__
+#endif /* ustrset.h */

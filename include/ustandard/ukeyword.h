@@ -33,4 +33,4 @@ int ukeyword_input(ukeyword_t* kw, unsigned char ch);
 void ukeyword_deinit(ukeyword_t* kw);
 
 __END_DECLS
-#endif//ukeyword.h
+#endif /* ukeyword.h */

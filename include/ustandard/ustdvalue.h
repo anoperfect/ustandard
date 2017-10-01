@@ -5,11 +5,8 @@ __BEGIN_DECLS
 
 int ustdvalue_init(void);
 
-
-
 extern int kstd_pid;
 
 
-
 __END_DECLS
-#endif//ustdvalue.h
+#endif /* ustdvalue.h */

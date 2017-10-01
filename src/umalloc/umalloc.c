@@ -1,7 +1,5 @@
 #include "ustandard/ustandard_sys.h"
 #include "ustandard/umalloc.h"
-#include "ustandard/uslog.h"
-#include "ustandard/udebug.h"
 struct umalloc_node {
     void*           ptr; 
     size_t          size; 
@@ -18,6 +16,36 @@ static struct umalloc_node klist = {0};
 
 /* set to enable monitor or not. */
 static int kmonitor_on = 0;
+
+
+typedef enum {
+    umalloc_failed_exit_e = 0, 
+    umalloc_failed_ignore_e , 
+    umalloc_failed_signal_e, 
+
+    umalloc_failed_line_e, 
+}umalloc_failed_e;
+
+static umalloc_failed_e kmalloc_on_alloc_failed = umalloc_failed_exit_e;
+
+
+#define logerr(x...) fprintf(stderr, x)
+
+
+
+
+
+void umalloc_setopt_alloc_failed(umalloc_failed_e opt)
+{
+    if(opt >= umalloc_failed_exit_e && opt < umalloc_failed_line_e) {
+        kmalloc_on_alloc_failed = opt;
+    }
+    else {
+        logerr("%s : invalid opt.\n", __FUNCTION__);
+    }
+}
+
+
 
 
 static pthread_mutex_t klock = PTHREAD_MUTEX_INITIALIZER;
@@ -143,7 +171,7 @@ static int umalloc_record_del(void* ptr,
         node_free = NULL;
     }
     else {
-        ulogerr("ufree ptr not found.\n");
+        logerr("ufree ptr not found.\n");
         ret = -1;
     }
     __loglist();
@@ -179,7 +207,7 @@ static int umalloc_record_modify(void* ptr_new, size_t size_new, void* ptr,
         node->line      = line;
     }
     else {
-        ulogerr("urealloc ptr not found.\n");
+        logerr("urealloc ptr not found.\n");
         ret = -1;
     }
     __loglist();
@@ -200,13 +228,28 @@ void* umalloc(size_t size,
         if(kmonitor_on) {
             int ret = umalloc_record_add(ptr, size, file, function, line);
             if(0 != ret) {
-                ulogerr("umalloc record add on %s: %s %d.\n", 
+                logerr("umalloc record add on %s: %s %d.\n", 
                         file, function, line);
             }
         }
     }
     else {
-        ulogerr("umalloc error on %s: %s %d.\n", file, function, line);
+        logerr("umalloc error on %s: %s %d.\n", file, function, line);
+        switch(kmalloc_on_alloc_failed) {
+            case umalloc_failed_exit_e:
+                exit(EXIT_FAILURE);
+                break;
+
+            case umalloc_failed_ignore_e :
+                break;
+
+            case umalloc_failed_signal_e :
+                kill(getpid(), SIGKILL);
+                break;
+
+            default:
+                break;
+        }
     }
 
     return ptr;
@@ -222,7 +265,7 @@ int ufree(void* ptr,
         if(kmonitor_on) {
             ret = umalloc_record_del(ptr, file, function, line);
             if(0 != ret) {
-                ulogerr("ufree %p error on %s: %s %d.\n", 
+                logerr("ufree %p error on %s: %s %d.\n", 
                         ptr,file, function, line);
             }
         }
@@ -231,7 +274,7 @@ int ufree(void* ptr,
         ptr = NULL;
     }
     else {
-        ulogerr("ufree NULL pointer on %s: %s %d.\n", file, function, line);
+        logerr("ufree NULL pointer on %s: %s %d.\n", file, function, line);
         ret = -1;
     }
 
@@ -248,13 +291,13 @@ void* urealloc(void* ptr_ori, size_t size,
     int ret = 0;
     if(NULL == ptr_ori) {
         if(NULL == ptr) {
-            ulogerr("urealloc error on %s: %s %d.\n", file, function, line);
+            logerr("urealloc error on %s: %s %d.\n", file, function, line);
         }
         else {
             if(kmonitor_on) {
                 ret = umalloc_record_add(ptr, size, file, function, line);
                 if(0 != ret) {
-                    ulogerr("umalloc record add on %s: %s %d.\n", 
+                    logerr("umalloc record add on %s: %s %d.\n", 
                             file, function, line);
                 }
             }
@@ -264,14 +307,14 @@ void* urealloc(void* ptr_ori, size_t size,
         if(kmonitor_on) {
             ret = umalloc_record_del(ptr_ori, file, function, line);
             if(0 != ret) {
-                ulogerr("ufree %p error on %s: %s %d.\n", 
+                logerr("ufree %p error on %s: %s %d.\n", 
                         ptr,file, function, line);
             }
         }
     }
     else {
         if(NULL == ptr) {
-            ulogerr("urealloc error on %s: %s %d.\n", file, function, line);
+            logerr("urealloc error on %s: %s %d.\n", file, function, line);
         }
         else if(ptr == ptr_ori) {
             if(kmonitor_on) {
@@ -279,7 +322,6 @@ void* urealloc(void* ptr_ori, size_t size,
             }
         }
         else {
-            ulogdbg("urealloc addr changed.\n");
             if(kmonitor_on) {
                 umalloc_record_modify(ptr, size, ptr_ori, file, function, line);
             }

@@ -9,4 +9,4 @@ typedef void* (*udata_dup)(void* p, size_t size);
 typedef int (*udata_copy)(void* dest, void* src, size_t size);
 typedef int (*udata_cmp)(void* p1, void* p2, size_t size);
 __END_DELCS
-#endif//udataoperate.h
+#endif /* udataoperate.h */

@@ -28,4 +28,4 @@ void* uqueue_pop_with_compare(struct uqueue* queue, udata_cmp cmp, void* arg);
 void* uqueue_get(struct uqueue* queue, int index);
 
 __END_DECLS
-#endif//uqueue.h
+#endif /* uqueue.h */

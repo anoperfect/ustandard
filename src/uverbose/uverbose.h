@@ -12,5 +12,6 @@ void uverbose_set(const char* level, FILE* fp)
 
 
 
+
 __END_DECLS
-#endif//uverbose.h
+#endif /* uverbose.h */

@@ -24,4 +24,4 @@ int uconf_close(CONF* conf);
 
 
 __END_DECLS
-#endif//__UCONF_PARSE_H__
+#endif /* uconf-parse.h */

@@ -18,6 +18,6 @@ int ulogshmc(key_t key, size_t size,
 
 
 __END_DECLS
-#endif/* ulogshms.h */
+#endif /* ulogshms.h */
 
 

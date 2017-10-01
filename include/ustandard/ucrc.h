@@ -9,4 +9,4 @@ unsigned int ucrc32(const unsigned char* data, int len);
 
 __END_DECLS
 
-#endif//__UCRC_H__
+#endif /* ucrc.h */ 

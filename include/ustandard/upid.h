@@ -6,4 +6,4 @@ __BEGIN_DECLS
 int upid_set(const char* path);
 
 __END_DECLS
-#endif//upid.h
+#endif /* upid.h */

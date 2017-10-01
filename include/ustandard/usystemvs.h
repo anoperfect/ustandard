@@ -7,4 +7,4 @@ int usystemvs(const char *format, ...);
 
 
 __END_DECLS
-#endif// usystemvs.h
+#endif /* usystemvs.h */

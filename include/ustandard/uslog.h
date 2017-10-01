@@ -31,7 +31,7 @@ struct uslog_data* uslog_init(void);
 int uslog_deinit(struct uslog_data* logctx);
 
 
-//int uslog_config_set(int level, struct uslog_config* config);
+/* int uslog_config_set(int level, struct uslog_config* config); */
 int uslog_config_setopt(struct uslog_data** logctx, int level, int tag, ...);
 
 
@@ -88,4 +88,4 @@ do {                                                                           \
 
 
 __END_DECLS
-#endif//uslog.h
+#endif /* uslog.h */

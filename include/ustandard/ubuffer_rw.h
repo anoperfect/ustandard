@@ -35,4 +35,4 @@ size_t ubuffer_rw_write(struct ubuffer_rw* buffer_rw, const void* ptr, size_t si
 size_t ubuffer_rw_read(struct ubuffer_rw* buffer_rw, void* ptr, size_t size);
 
 __END_DECLS
-#endif//ubuffer_rw.h
+#endif /* ubuffer_rw.h */

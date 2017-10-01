@@ -24,6 +24,7 @@ void* urealloc(void* ptr, size_t size,
 
 #define um_malloc(size)             malloc(size)
 #define um_free(ptr)                free(ptr)
+#define um_free_check(ptr)          if(ptr) {free(ptr); ptr = NULL;}
 #define um_realloc(ptr, size)       realloc(ptr, size)
 
 #endif
@@ -31,9 +32,8 @@ void* urealloc(void* ptr, size_t size,
 
 size_t umalloc_query(char* s, size_t size);
 int umalloc_query_clear(void);
-int umalloc_enable(int set);
+int umalloc_enable_monitor(int set); /* 0 to disbale, or enable. default disable. */
 
-#define um_umalloc_perror(size) ulogerr("umalloc(%u) error at %s:%u.\n", size, __FILE__, __LINE)
 
 
 
@@ -43,4 +43,4 @@ int umalloc_enable(int set);
 
 
 __END_DECLS
-#endif//umalloc.h
+#endif /* umalloc.h */

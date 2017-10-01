@@ -1,6 +1,6 @@
 #ifndef __USTANDARD_TYPES_H__
 #define __USTANDARD_TYPES_H__
-
+__BEGIN_DECLS
 
 
 
@@ -35,14 +35,20 @@ struct udata_const {
 
 struct uvdata{
     void* p;
+    size_t size; /* indicate the payload size. if use reference pointer, size would not be used. */
 
-    bool pointer_on_use; /* indicate pointer p on use, or payload on use. */
+    bool use_payload; /* indicate use payload to copy data to payload, or just use reference pointer to p. */
+    bool sign_remove; /* while data struct query, can not delete while query. so use this sign call xxx_remove_signed to remove.*/
     
-    size_t size;
-    char payload[0];
+    char payload[1];
 };
 
 
+/* how to descripe the node. */
+typedef void (*uvdata_descripe_func)(struct uvdata*);
+
+/* how to free the node. */
+typedef void (*uvdata_free_func)(struct uvdata*);
 
 
 
@@ -51,6 +57,8 @@ struct uvdata{
 
 
 
+
+typedef int (*updescription)(char* str, size_t size, void* p);
 
 
 
@@ -117,5 +125,5 @@ struct ucbuf {
 
 
 
-
-#endif//__USTANDARD_TYPES_H__
+__END_DECLS
+#endif /* utypes.h */

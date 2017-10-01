@@ -20,4 +20,4 @@ int usvmesgs_recv(__ptr_t id, struct umesg_recv_data* data, struct timeval* to);
 
 
 __END_DECLS
-#endif//usvmesgs.h
+#endif /* usvmesgs.h */

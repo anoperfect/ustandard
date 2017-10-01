@@ -39,9 +39,8 @@ int ucycmr_info(struct ucycm_read* cmr,
 
 int ucycmr_destroy(struct ucycm_read* cmr);
 
+
+
+
 __END_DECLS
-#endif//ucycm_read.h
-
- 
-
-
+#endif /* ucycm_read.h */

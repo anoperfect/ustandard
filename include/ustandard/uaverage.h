@@ -6,4 +6,4 @@ struct uaverage_double* uaverage_double_init(int nmax, int percent_cut);
 int uaverage_double_deinit(struct uaverage_double* avr);
 double uaverage_double_add(struct uaverage_double* avr, double d);
 __END_DECLS
-#endif//uaverage.h
+#endif /* uaverage.h */

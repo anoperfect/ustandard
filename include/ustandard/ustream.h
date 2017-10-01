@@ -14,4 +14,4 @@ int ustream_append_to_file(const char* path, const void* ptr, size_t size);
 
 __END_DECLS
 
-#endif//__USTRSET_H__
+#endif /* ustream.h */

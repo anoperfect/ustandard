@@ -19,4 +19,4 @@ int ustrtime_tm(char* s, size_t max, const char* format, struct tm* t);
 int ustrtime_now(char* s, size_t max, const char* format);
 
 __END_DECLS
-#endif//udatetime.h
+#endif /* udatetime.h */

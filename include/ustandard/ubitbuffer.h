@@ -32,5 +32,15 @@ int ubit_trans01_uint(char* dest, size_t size, unsigned int uv);
 int ubit_trans01_uint64(char* dest, size_t size, uint64_t uv);
 
 
+
+
+
+
+
+
+
+
+
+
 __END_DECLS
-#endif//  ubitbuffer.h
+#endif /* ubitbuffer.h */

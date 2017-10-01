@@ -27,4 +27,4 @@ void umd5_to_checksum(char str[32], const unsigned char value[16]);
 
 __END_DECLS
 
-#endif//__UMD5_H__
+#endif /* umd5.h */

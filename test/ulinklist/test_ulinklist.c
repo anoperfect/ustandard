@@ -5,28 +5,28 @@ int main()
 
 
     struct ulinklist* list = ulinklist_create();
-    ulinklist_add_tailer(list, 1);
-    ulinklist_add_tailer(list, 2);
-    ulinklist_add_tailer(list, 3);
-    ulinklist_add_tailer(list, 4);
-    ulinklist_add_tailer(list, 5);
-    ulinklist_add_tailer(list, 6);
-    ulinklist_add_header(list, 7);
+    ulinklist_add_tailer(list, (void*)1);
+    ulinklist_add_tailer(list, (void*)2);
+    ulinklist_add_tailer(list, (void*)3);
+    ulinklist_add_tailer(list, (void*)4);
+    ulinklist_add_tailer(list, (void*)5);
+    ulinklist_add_tailer(list, (void*)6);
+    ulinklist_add_header(list, (void*)7);
 
-    int payload = 0;
-    while(0 != (payload=ulinklist_next(list))) {
-        ulogtst("payload : %d.\n", payload);
+    struct uvdata* data;
+    while(NULL != (data=ulinklist_next(list))) {
+        ulogtst("payload : %ld.\n", (long)(data->p));
     }
 
     char s[10240];
 
     umalloc_query(s, 10240);
-    printf("%s\n", s);
+    printf("umalloc_query : %s\n", s);
 
     ulinklist_destroy(list);
 
     umalloc_query(s, 10240);
-    printf("%s\n", s);
+    printf("umalloc_query after ulinklist_destroy:%s\n", s);
 
     return 0;
 }

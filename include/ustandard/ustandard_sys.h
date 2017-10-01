@@ -1,5 +1,6 @@
 #ifndef __USTANDARD_SYS_H__
 #define __USTANDARD_SYS_H__
+#define _GNU_SOURCE     1
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,7 +31,8 @@
 #include <sys/shm.h>
 #include <sys/sem.h>
 #include <sys/stat.h>
-
+#include <sys/types.h>
+#include <signal.h>
 #include <sys/ioctl.h>
 
 #include <poll.h>
@@ -39,8 +41,5 @@
 
 #include <setjmp.h>
 
-
-
-
-
-#endif//__USTANDARD_SYS_H__
+#define _Bool unsigned char
+#endif /* ustandard_sys.h */

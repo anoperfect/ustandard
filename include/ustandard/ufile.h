@@ -6,15 +6,18 @@ __BEGIN_DECLS
     计算文件的长度.
     文件无法打开或者读取时, 返回0.
 */
-long ufile_length(const char* filename);
+size_t ufile_length(const char* filename);
 
 
 /*
     文件全部内容读到ptr中. 最多读取长度size.
     返回实际读取的长度.
 */
-size_t ufile_copy_to_buffer(const char* filename, void* ptr, size_t size);
+size_t ufile_read(const char* filename, void* ptr, size_t size);
 
+
+/* use um_free(p) to free the return string value. */
+char* ufile_dup(const char* filename, size_t* len);
 
 /*
     在文件中插入内容. 插入的位置为index.
@@ -57,6 +60,6 @@ int ufile_global_close(void);
 
 
 __END_DECLS
-#endif//ufile.h
+#endif /* ufile.h */
 
 

@@ -72,4 +72,4 @@ do{                                                                             
 #define um_utv_is_zero(x)   ((0 == ((x)->tv_sec)) && (0 == ((x)->tv_usec)))
 
 
-#endif//__UFANCTION_H__
+#endif /* ufunction.h */

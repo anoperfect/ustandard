@@ -16,6 +16,9 @@ char* ustrdup(const char* src);
 char* ustrdup_sub(const char* src, struct urange range);
 
 
+char* ustrcat(char* dest, size_t size_dest, const char* src);
+char* ustrncat(char* dest, size_t size_dest, const char* src, size_t n);
+char* ustrcat_format(char* dest, size_t size_dest, const char* fmt, ...);
 
 
 
@@ -81,6 +84,10 @@ long ustr_find(const char* s,
         long nmax);
 
 
+/* use um_free(p) to free the return dest value. */
+int ustr_replaces(const char* s, 
+        const char* needle, const char* to, 
+    	void** ppdest, size_t* len_dest);
 
 
 

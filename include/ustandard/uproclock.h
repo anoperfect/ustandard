@@ -18,5 +18,5 @@ int uproclock_ipcsem_destroy(int semid);
 
 __END_DECLS
 
-#endif//__UPROCLOCK_H__
+#endif /* uproclock.h */
 

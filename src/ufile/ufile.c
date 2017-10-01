@@ -3,35 +3,31 @@
 #include "ustandard/ustring.h"
 #include "ustandard/ufile.h"
 
-#ifndef um_return
-    #define um_return(r) return r
-#endif
-
-long ufile_length(const char* filename)
+size_t ufile_length(const char* filename)
 {
     long file_length;
     FILE* fp = fopen(filename, "r");
     if(NULL == fp)
     {
         ulogerr("%s : fopen <%s>\n", "ufile", filename);
-        um_return(0);
+        return 0;
     }
 
     int ret = fseek(fp, 0, SEEK_END);
     if(0 != ret)
     {
         ulogerr("%s : fseek <%s> .\n", "ufile", filename);
-        um_return(0);
+        return 0;
     }
 
     file_length = ftell(fp);
     fclose(fp);
     
-    um_return(file_length);
+    return file_length;
 }
 
 
-size_t ufile_copy_to_buffer(const char* filename, void* ptr, size_t size)
+size_t ufile_read(const char* filename, void* ptr, size_t size)
 {
     size_t ret = 0;
 
@@ -39,7 +35,7 @@ size_t ufile_copy_to_buffer(const char* filename, void* ptr, size_t size)
     if(NULL == fp)
     {
         ulogerr("%s : fopen <%s>\n", "ufile", filename);
-        um_return(0);
+        return 0;
     }
 
     ret = fread(ptr, 1, size, fp);
@@ -50,7 +46,25 @@ size_t ufile_copy_to_buffer(const char* filename, void* ptr, size_t size)
 
     fclose(fp);
 
-    um_return(ret);
+    return ret;
+}
+
+
+/* use um_free(p) to free the return string value. */
+char* ufile_dup(const char* filename, size_t* len)
+{
+    char* rets = NULL;
+
+    size_t length = ufile_length(filename);
+    if(len) {
+        *len = length;
+    }
+    if(length > 0 && NULL != (um_malloc(length + 1))) {
+        ufile_read(filename, rets, length);
+        rets[length] = '\0';
+    }
+
+    return rets;
 }
 
 
@@ -61,7 +75,7 @@ int ufile_insert_content(const char* filename, long index,
     if(NULL == fp)
     {
         ulogerr("ufile : %s\n", "open file error.");
-        um_return(-1);
+        return -1;
     }
 
     int retf;
@@ -71,14 +85,14 @@ int ufile_insert_content(const char* filename, long index,
     if(0 != retf)
     {
         ulogerr("ufile : %s\n", "fseek.");
-        um_return(-1);
+        return -1;
     }
 
     nfwr = fwrite(ptr, size, nmemb, fp); 
     if(nfwr != nmemb)
     {
         ulogerr("ufile : %s\n", "fwrite.");
-        um_return(-1);
+        return -1;
     }
 
     fclose(fp);
@@ -87,7 +101,7 @@ int ufile_insert_content(const char* filename, long index,
     if(NULL == fp)
     {
         ulogerr("ufile : %s\n", "open file error.");
-        um_return(-1);
+        return -1;
     }
 
     char buf;
@@ -98,26 +112,26 @@ int ufile_insert_content(const char* filename, long index,
         if(0 != retf)
         {
             ulogerr("ufile : %s\n", "fseek.");
-            um_return(-1);
+            return -1;
         }
         nfwr = fread(&buf, 1, 1, fp);
         if(nfwr != 1)
         {
             ulogerr("ufile : %s\n", "fread.");
-            um_return(-1);
+            return -1;
         }
 
         retf = fseek(fp, offset, SEEK_SET);
         if(0 != retf)
         {
             ulogerr("ufile : %s\n", "fseek.");
-            um_return(-1);
+            return -1;
         }
         nfwr = fwrite(&buf, 1, 1, fp);
         if(nfwr != 1)
         {
             ulogerr("ufile : %s\n", "fwrite.");
-            um_return(-1);
+            return -1;
         }
 
         offset --;
@@ -127,17 +141,17 @@ int ufile_insert_content(const char* filename, long index,
     if(0 != retf)
     {
         ulogerr("ufile : %s\n", "fseek.");
-        um_return(-1);
+        return -1;
     }
     nfwr = fwrite(ptr, size, nmemb, fp);
     if(nfwr != nmemb)
     {
         ulogerr("ufile : %s\n", "fwrite.");
-        um_return(-1);
+        return -1;
     }
 
     fclose(fp);
-    um_return(0);
+    return 0;
 }
 
 
@@ -148,7 +162,7 @@ int ufile_insert_content1(const char* filename, long index,
     if(NULL == fp)
     {
         ulogerr("ufile : %s\n", "open file error.");
-        um_return(-1);
+        return -1 ;
     }
 
     int retf;
@@ -158,14 +172,14 @@ int ufile_insert_content1(const char* filename, long index,
     if(0 != retf)
     {
         ulogerr("ufile : %s\n", "fseek.");
-        um_return(-1);
+        return -1 ;
     }
 
     nfwr = fwrite(ptr, size, nmemb, fp); 
     if(nfwr != nmemb)
     {
         ulogerr("ufile : %s\n", "fwrite.");
-        um_return(-1);
+        return -1 ;
     }
 
     fclose(fp);
@@ -174,7 +188,7 @@ int ufile_insert_content1(const char* filename, long index,
     if(NULL == fp)
     {
         ulogerr("ufile : %s\n", "open file error.");
-        um_return(-1);
+        return -1 ;
     }
 
     int membsize = size*nmemb;
@@ -182,7 +196,7 @@ int ufile_insert_content1(const char* filename, long index,
     buf = um_malloc(membsize*sizeof(char));
     if(NULL==buf)
     {
-        um_return(-1);
+        return -1 ;
     }
 
     long filelength = ufile_length(filename);
@@ -267,13 +281,13 @@ int ufile_insert_content1(const char* filename, long index,
     fclose(fp);
 
     um_free(buf);
-    um_return(0);
+    return 0 ;
 
 error:
     if(NULL != buf) {
         um_free(buf);
     }
-    um_return(-1);
+    return -1 ;
 }
 
 
@@ -289,17 +303,17 @@ size_t ufile_write(const char* path, const char* mode, const void* buf, size_t s
     FILE* fp = fopen(path, mode); 
     if(NULL == fp) {
         ulogerr("fopen error on <%s><%s>.\n", path, mode);
-        um_return(retn);
+        return retn;
     }
 
     retn = fwrite(buf, 1, size, fp);
     if(retn != size) {
         ulogerr("fwrite error on <%s><%s>.\n", path, mode);
-        um_return(retn);
+        return retn;
     }
     fclose(fp);
 
-    um_return(retn);
+    return retn;
 }
 
 
@@ -311,7 +325,7 @@ size_t ufile_write_string(const char* path, const char* mode, const char* str)
 {
     size_t retn;
     retn = ufile_write(path, mode, str, strlen(str));
-    um_return(retn);
+    return retn;
 }
 
 
@@ -333,7 +347,7 @@ size_t ufile_writevs(const char* path, const char* mode, const char* fmt, ...)
     #undef LEN_BUF 
 
     retn = ufile_write(path, mode, buf, strlen(buf));
-    um_return(retn);
+    return retn;
 }
 
 

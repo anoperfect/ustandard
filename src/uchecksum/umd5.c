@@ -22,8 +22,10 @@ without express or implied warranty of any kind.
 These notices must be retained in any copies of any part of this
 documentation and/or software.
  */
-
-#include <string.h>
+#include "ustandard/ustandard_sys.h"
+#include "ustandard/umalloc.h"
+#include "ustandard/uslog.h"
+#include "ustandard/udebug.h"
 #include "ustandard/umd5.h"
 
 /* Constants for MD5Transform routine.
@@ -140,7 +142,7 @@ int  umd5_path(unsigned char value[16], const char* path)
     return ret;
 }
  
-
+#include <stdio.h>
 void umd5_to_checksum(char str[32], const unsigned char value[16])
 {
     char tmp[3];

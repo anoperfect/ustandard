@@ -58,6 +58,7 @@
 
 
 #include "ustandard/ulinklist.h"
+#include "ustandard/uarray.h"
 
 
 

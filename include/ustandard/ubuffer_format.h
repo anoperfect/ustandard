@@ -33,4 +33,4 @@ const char* ubuffer_tostr(const void* ptr, size_t size,
 
 const char* ubuffer_tostr_easy(const void* ptr, size_t size);
 __END_DECLS
-#endif //ubuffer_format.h
+#endif /* ubuffer_format.h */

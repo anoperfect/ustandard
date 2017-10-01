@@ -77,4 +77,4 @@ do{ \
 
 
 __END_DECLS
-#endif//__UTIMEVAL_H__
+#endif /* utv.h */

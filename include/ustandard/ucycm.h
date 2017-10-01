@@ -8,11 +8,7 @@ struct ucycm_param_read {
     useconds_t              usec_sleep; /* usleep time while waiting. */
     unsigned long           nmax;       /* nsegment aviliable. */
 };
-
 struct ucycm;
-
-
-
 struct ucycm* ucycm_create(void* addr, key_t key, size_t size_total, 
         const char* name, 
         long n_data_info, size_t size_additional_info, 
@@ -31,5 +27,6 @@ int ucycm_nattch(struct ucycm* cm);
 int ucycm_destroy(struct ucycm* cm);
 
 
+
 __END_DECLS
-#endif//ucycshm.h
+#endif /* ucycshm.h */

@@ -6,4 +6,4 @@ const char* ucmdline_get_name(void);
 int ucmdline_get_argc(void);
 const char* ucmdline_get_argv(int idx);
 __END_DECLS
-#endif//ucmdline.h
+#endif /* ucmdline.h */

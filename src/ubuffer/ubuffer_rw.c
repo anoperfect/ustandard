@@ -172,7 +172,6 @@ size_t ubuffer_rw_write(struct ubuffer_rw* buffer_rw, const void* ptr, size_t si
         buffer_rw->size = size_buffer;
     }
 
-    //size_t size_aviliable = buffer_rw->total - size_buffer;
     if((buffer_rw->total - buffer_rw->size) < size) {
         _ubuffer_rw_expand(buffer_rw, size);
     }

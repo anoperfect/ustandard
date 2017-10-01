@@ -42,7 +42,7 @@ int _ucmdline_parse(void)
     char path[LEN_PATH];
 
     snprintf(path, LEN_PATH, "/proc/%d/cmdline", pid);
-    size_t size = ufile_copy_to_buffer(path, kcmdline, LEN_CMDLINE-1);
+    size_t size = ufile_read(path, kcmdline, LEN_CMDLINE-1);
     struct ubuffer_data data[NUM_ARG];
     kargc = ubuffer_split_by_char(kcmdline, size, '\0', data, NUM_ARG);
     if(kargc > 0) {
