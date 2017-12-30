@@ -2,35 +2,31 @@
 #define __USTANDARD_TYPES_H__
 __BEGIN_DECLS
 
-
-
-#define HAVE__BOOL  1
 #if HAVE_STDBOOL_H
     #include <stdbool.h>
 #else
-    #if !HAVE__BOOL
-        #ifdef __cplusplus
-            typedef bool _Bool;
-        #else
-            typedef unsigned char _Bool;
-        #endif
-    #endif
+    #ifndef __cplusplus
 
-    #define bool _Bool
-    #define false 0
-    #define true 1
-    #define __bool_true_false_are_defined 1
+        #define bool	_Bool
+        #define true	1
+        #define false	0
+
+    #else /* __cplusplus */
+
+        /* Supporting <stdbool.h> in C++ is a GCC extension.  */
+        #define _Bool	bool
+        #define bool	bool
+        #define false	false
+        #define true	true
+
+    #endif /* __cplusplus */
+
+    /* Signal that all the definitions are present.  */
+    #define __bool_true_false_are_defined	1
+
 #endif 
 
-
 typedef unsigned char uchar_t;
-
-
-struct udata_const {
-    const void* ptr;
-    size_t      size;
-};
-
 
 
 struct uvdata{
@@ -54,13 +50,14 @@ typedef void (*uvdata_free_func)(struct uvdata*);
 
 
 
-
+typedef void (*upfree_func)(void* p);
 
 
 
 typedef int (*updescription)(char* str, size_t size, void* p);
 
 
+typedef int (*upf_description)(char* str, size_t size, void* p);
 
 
 
@@ -87,7 +84,6 @@ struct ucbuf {
 
 
 #define KLEN_PATH       (1024)
-
 
 
 

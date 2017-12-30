@@ -217,16 +217,16 @@ char    kchars_crlf[] = {'\r', '\n'};
 size_t  kn_chars_crlf = 2;
 
 
-int uchars_include_char(const char s[], size_t n, char ch)
+bool uchars_include_char(const char s[], size_t n, char ch)
 {
-    int ret = 0;
+    int ret = false;
     errno = 0;
 
     size_t i;
     for(i=0; i<n; i++)
     {
         if(ch == s[i]) {
-            ret = 1;
+            ret = true;
             break;
         }
     }
@@ -236,8 +236,8 @@ int uchars_include_char(const char s[], size_t n, char ch)
 
 
 /*strtrim.*/
-char* ustrtrim_chars(char* s, int trim_left, int trim_right, 
-        char chars[], size_t n)
+char* ustrtrim_chars(char* s, bool trim_left, bool trim_right, 
+        const char* chars, size_t n)
 {
     uslog_check_arg(s != NULL, NULL);
 
@@ -251,6 +251,7 @@ char* ustrtrim_chars(char* s, int trim_left, int trim_right,
 
     if(trim_right) {
         for(i=(int)len_s-1; i>=0; i--) {
+            /* could use bitmap. */
             if(uchars_include_char(chars, n, s[i])) {
                 len_right ++;
                 s[i] = '\0';
@@ -728,7 +729,7 @@ char ustrtail(const char* s)
 
 
 
-
+/* if string last char equal to ch, cut it. usually used to cut \n if the reading line */
 char* ustrcut_char_last(char* output, char ch)
 {
     size_t len;
@@ -769,41 +770,6 @@ char* ustrcut_char_last(char* output, char ch)
 
 
 
-struct sub_string {
-    const char* s;
-    size_t      n;
-};
-
-
-int ustrreg_sub(const char* s, 
-        const char* regex, 
-        struct sub_string* sub)
-{
-    int ret = 0;
-
-    regex_t reg = {0};
-    ret = regcomp(&reg, regex, REG_EXTENDED);
-    if(0 != ret) {
-        ret = -1;
-        goto finish;
-    }
-
-    regmatch_t match;
-    ret = regexec(&reg, s, 1, &match, 0);
-    if(0 != ret) {
-        ret = -1;
-        goto finish;
-    }
-
-    if(NULL != sub) {
-        sub->s = s+match.rm_so;
-        sub->n = match.rm_eo - match.rm_so;
-    }
-
-finish:
-    regfree(&reg);
-    return ret;
-}
 
 
 

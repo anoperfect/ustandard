@@ -157,7 +157,7 @@ struct uthreads* uthreads_create(int number)
     ret = pthread_create(&ths->pth_assign, NULL, func_assign, ths);
     ret |= pipe(ths->pipe_assign);
 
-    ths->task_status_records = uarray_create(sizeof(struct uthread_task_record), -1);
+    ths->task_status_records = uarray_create(sizeof(struct uthread_task_record));
     ths->tasks = ulinklist_create();
 
     ths->threads = um_malloc(sizeof(struct uthread)*ths->number);

@@ -1,6 +1,7 @@
-uslog --- log message with level.
+uslog       --- log message with level. 
+umalloc     --- monitor malloc and free. 
 ===========================================================
-umalloc --- monitor malloc and free. (uslog)
+
 ===========================================================
 ustring --- strxxx function. (uslog,umalloc)
 

@@ -59,7 +59,10 @@ char* ufile_dup(const char* filename, size_t* len)
     if(len) {
         *len = length;
     }
-    if(length > 0 && NULL != (um_malloc(length + 1))) {
+
+    if(length > 0 
+            && NULL != (rets= (char*)um_malloc(length + 1))
+            ) {
         ufile_read(filename, rets, length);
         rets[length] = '\0';
     }

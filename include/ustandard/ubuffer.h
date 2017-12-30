@@ -14,18 +14,14 @@ int ubuffer_split_by_char(const void* src, size_t size,
 
 
 /* not test. */
-void* ubuf_move_left(void* p, size_t size_src, size_t size_dest);
+void* ubuffer_move_left(void* p, size_t size, 
+        void* src, size_t size_src, 
+        size_t n);
 
 
-void* ubuf_move_right(void* p, size_t size, size_t n);
-
-
-
-
-
-
-
-
+void* ubuffer_move_right(void* p, size_t size, 
+        void* src, size_t size_src, 
+        size_t n);
 
 /*
     return : found ranges. 
@@ -53,6 +49,7 @@ int ubuffer_replace(const void* src, size_t len_src,
 
 
 
+void* ubuffer_dup(void* p, size_t size);
 
 
 

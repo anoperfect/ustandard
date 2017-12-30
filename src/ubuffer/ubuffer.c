@@ -36,27 +36,44 @@ int ubuffer_split_by_char(const void* src, size_t size,
 }
 
 
-void* ubuf_move_left(void* p, size_t size_src, size_t size_dest)
+void* ubuffer_move_left(void* p, size_t size, 
+        void* src, size_t size_src, 
+        size_t n)
 {
-    if(NULL != p && size_src > size_dest) {
+    if(NULL != p
+            && p <= src
+            && (p+size) >= (src+size_src)
+            && (p+n) <= src) {
+        void* dest = src - n;
         int i;
-        size_t offset = size_src - size_dest;
-        for(i=0; i<(int)size_dest; i++) {
-            ((unsigned char*)p)[i] = ((unsigned char*)p+offset)[i];
+        for(i=0; i<(int)size_src; i++) {
+            ((unsigned char*)dest)[i] = ((unsigned char*)dest+n)[i];
         }
+    }
+    else {
+        ulogerr("ubuffer_move_left pramater invalid: p:%p, size:%zd, src:%p, size_src:%zd, n:%zd\n", p, size, src, size_src, n);
     }
 
     return p;
 }
 
 
-void* ubuf_move_right(void* p, size_t size, size_t n)
+void* ubuffer_move_right(void* p, size_t size, 
+        void* src, size_t size_src, 
+        size_t n)
 {
-    if(NULL != p && size > 0 && n > 0) {
+    if(NULL != p
+            && p <= src
+            && (p+size) >= (src+size_src)
+            && (p+size) >= (src+size_src+n)) {
+        void* dest = src + n;
         int i;
-        for(i=size-1; i>=0; i--) {
-            ((unsigned char*)p)[i+n] = ((unsigned char*)p)[i];
+        for(i=size_src-1; i>=0; i--) {
+            ((unsigned char*)dest)[i] = ((unsigned char*)dest-n)[i];
         }
+    }
+    else {
+        ulogerr("ubuffer_move_left pramater invalid: p:%p, size:%zd, src:%p, size_src:%zd, n:%zd\n", p, size, src, size_src, n);
     }
 
     return p;
@@ -264,3 +281,13 @@ int ubuffer_replace(const void* src, size_t len_src,
 
 
 
+
+
+
+
+void* ubuffer_dup(void* p, size_t size)
+{
+    void* dest = um_malloc(size);
+    memcpy(dest, p, size);
+    return dest;
+}

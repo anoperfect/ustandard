@@ -1,5 +1,5 @@
 -include mk.test.target
-OPTS += -Wall -Werror -g -std=c99
+OPTS += -Wall -Werror -g 
 USE_USTANDARD += -I$(ROOT_USTANDARD)include -L$(ROOT_USTANDARD)lib -lustandard$(CROSS_LIBRARY_SUFFIX) -Wl,-rpath=$(ROOT_USTANDARD)lib -lpthread -lrt
 INC	+= -I$(ROOT_USTANDARD)/test
 
@@ -12,7 +12,7 @@ targets :
 	done
 else
 target : 
-	$(CROSS_COMPILER)gcc $(wildcard *.c) $(OPTS) $(INC) $(USE_USTANDARD)
+	$(CROSS_COMPILER)g++ $(wildcard *.cpp) $(OPTS) $(INC) $(USE_USTANDARD)
 endif
 
 all : targets

@@ -1,5 +1,4 @@
 SOURCES		= 																			\
-																						\
 				./src/uslog/uslog.c														\
 				./src/udebug/udebug.c													\
 				./src/umalloc/umalloc.c													\
@@ -33,8 +32,10 @@ SOURCES		= 																			\
 				./src/ucmdline/ucmdline.c												\
 				./src/usvmesg/usvmesgc.c												\
 				./src/usvmesg/usvmesgs.c												\
+				./src/usocket/usocket.c									                \
 				./src/ubitbuffer/ubitbuffer.c											\
 				./src/ulinklist/ulinklist.c												\
 				./src/uarray/uarray.c													\
 				./src/uthread/uthreads.c												\
 				./src/uthreadprivate/uthreadprivate.c									\
+			    ./src/udictionary/udictionary.c                             		    \

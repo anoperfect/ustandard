@@ -6,46 +6,58 @@
 struct uarray {
     int total;      /* current total number. */
     int count;      /* count. */
-    int limit;      /* expand limit. -1 mean no limit.*/
+    int limit;      /* expand limit. 0 mean no limit.*/
 
 
     updescription des;
 
     size_t size_entry;
     void *p;
+
+    size_t num_init;
+    size_t num_expand;
 };
 
 
 #define UARRAY_NUMBER_INIT     16
-#define UARRAY_NUMBER_EXPAND_LIMIT     128
-struct uarray* uarray_create(size_t size_entry, int limit)
+#define UARRAY_NUMBER_EXPAND   16
+struct uarray* _uarray_create(size_t size_entry, int limit, int num_init, int num_expand)
 {
     struct uarray* array = um_malloc(sizeof(*array));
     if(array) {
-        array->des = NULL;
-        array->count = 0;
-        array->limit = limit;
-        if(limit == -1 || limit >= UARRAY_NUMBER_INIT) {
-            array->total = UARRAY_NUMBER_INIT;
-        }
-        else {
-            array->total = limit;
-        }
         array->size_entry = size_entry;
-        array->p = um_malloc(array->total * array->size_entry);
-        if(!array->p) {
-            um_free(array);
-            array = NULL;
+        array->des = NULL;
+
+        array->count = 0;
+
+        array->limit = limit;
+        array->num_init     = 0;
+        array->num_expand   = num_expand;
+        
+        if(num_init > 0) {
+            num_init = limit>0?um_min(num_init, limit):num_init;
+            array->num_init = num_init;
+            array->total = array->num_init;
+            array->p = um_malloc(array->total * array->size_entry);
+            if(!array->p) {
+                um_free(array);
+                array = NULL;
+            }
         }
     }
 
     return array;
 }
 
-
-struct uarray* uarray_create_detail(size_t size_entry, int limit, updescription des)
+struct uarray* uarray_create(size_t size_entry)
 {
-    struct uarray* array = uarray_create(size_entry, limit);
+    return _uarray_create(size_entry, 0, UARRAY_NUMBER_INIT, UARRAY_NUMBER_EXPAND);
+}
+
+
+struct uarray* uarray_create_detail(size_t size_entry, int limit, int num_init, int num_expand, updescription des)
+{
+    struct uarray* array = _uarray_create(size_entry, limit, num_init, num_expand);
     if(array) {
         array->des = des;
     }
@@ -74,22 +86,16 @@ int _uarray_expand(struct uarray* array)
     int ret = 0;
 
     /* allow to expand. */
-    if(-1 == array->limit || array->total < array->limit) {
-        int num_expand = array->total * 20 / 100;
-        if(num_expand < UARRAY_NUMBER_INIT) {
-            num_expand = UARRAY_NUMBER_INIT;
-        }
-
-        num_expand = um_max(num_expand, UARRAY_NUMBER_INIT);
-        num_expand = um_min(num_expand, UARRAY_NUMBER_EXPAND_LIMIT);
-
-        if(-1 != array->limit) {
+    if(0 == array->limit || array->total < array->limit) {
+        int num_expand = array->num_expand;
+        if(0 != array->limit) {
             num_expand = um_min(num_expand, array->limit - array->total);
         }
 
         void* tmp = um_realloc(array->p, array->size_entry * (array->total + num_expand));
         if(tmp) {
             array->total += num_expand;
+            array->p = tmp;
         }
     }
     else {
@@ -154,6 +160,27 @@ int uarray_delete_at(struct uarray* array, int at)
 }
 
 
+int uarray_clear(struct uarray* array, int count, int total)
+{
+    int ret = 0;
+
+    if(count >= 0 && count <= array->count) {
+        array->count = count;
+    }
+
+    if(total != -1
+        && total < array->total
+        && total >= array->count) {
+        void* tmp = um_realloc(array->p, array->size_entry * total);
+        if(tmp) {
+            array->total = total;
+        }
+    }
+
+    return ret;
+}
+
+
 void* uarray_at(struct uarray* array, int at)
 {
     void* retp = NULL;
@@ -163,6 +190,18 @@ void* uarray_at(struct uarray* array, int at)
     }
 
     return retp;
+}
+
+
+int uarray_value(struct uarray* array, int at, void* p)
+{
+    int ret = 0;
+
+    if(at >= 0 && at < array->count) {
+        memcpy(p, array->p + array->size_entry * at, array->size_entry);
+    }
+
+    return ret;
 }
 
 

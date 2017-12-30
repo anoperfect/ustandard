@@ -14,12 +14,12 @@ __BEGIN_DECLS
 
 
 
-int64_t utv_count(const struct timeval* tstart, const struct timeval* tend);
-int64_t utv_expired(const struct timeval* tstart);
+long long utv_count(const struct timeval* tstart, const struct timeval* tend);
+long long utv_expired(const struct timeval* tstart);
 int utv_add(struct timeval* tv, const struct timeval* add);
 int utv_sub(struct timeval* tv, const struct timeval* sub);
-int utv_add_usec(struct timeval* tv, int64_t usec);
-int utv_sub_usec(struct timeval* tv, int64_t usec);
+int utv_add_usec(struct timeval* tv, long long usec);
+int utv_sub_usec(struct timeval* tv, long long usec);
 
 extern int ktv_rsec;
 extern int ktv_rusec;
@@ -57,7 +57,7 @@ const char* utv_tostr(const struct timeval* tv);
     struct timeval utv_count_qwerty_##name##_s, utv_count_qwerty_##name##_e;    \
     gettimeofday(&utv_count_qwerty_##name##_s, NULL)
 #define __utv_count_usec(name)  \
-    gettimeofday(&utv_count_qwerty_##name##_e, NULL) == 0?(int64_t)(utv_count_qwerty_##name##_e.tv_sec-utv_count_qwerty_##name##_s.tv_sec)*(int64_t)SECOND_TO_MICRO + (int64_t)(utv_count_qwerty_##name##_e.tv_usec-utv_count_qwerty_##name##_s.tv_usec):0
+    gettimeofday(&utv_count_qwerty_##name##_e, NULL) == 0?(long long)(utv_count_qwerty_##name##_e.tv_sec-utv_count_qwerty_##name##_s.tv_sec)*(long long)SECOND_TO_MICRO + (long long)(utv_count_qwerty_##name##_e.tv_usec-utv_count_qwerty_##name##_s.tv_usec):0
 
 
 #define __utv_interval(name, usec)  \
@@ -70,7 +70,7 @@ do{ \
     else {  \
         struct timeval tv_cur;  \
         gettimeofday(&tv_cur, NULL);    \
-        usec = (int64_t)(tv_cur.tv_sec-ktv_interval_tyuiop_##name.tv_sec)*(int64_t)SECOND_TO_MICRO + (int64_t)(tv_cur.tv_usec-ktv_interval_tyuiop_##name.tv_usec);  \
+        usec = (long long)(tv_cur.tv_sec-ktv_interval_tyuiop_##name.tv_sec)*(long long)SECOND_TO_MICRO + (long long)(tv_cur.tv_usec-ktv_interval_tyuiop_##name.tv_usec);  \
         ktv_interval_tyuiop_##name = tv_cur;    \
     }   \
 }while(0)

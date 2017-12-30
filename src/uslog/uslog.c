@@ -1,6 +1,16 @@
-#include "ustandard/ustandard_sys.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <pthread.h>
+#include <stdarg.h>
+#include <sys/time.h>
+#include <unistd.h>
+
 #include "ustandard/uslog.h"
 #define MAX_SLOG    8
+
+
 
 
 /* config for different level. */
@@ -44,31 +54,31 @@ int _uslog_config_init(struct uslog_data* logctx)
 
         level = index_block*8 + 0;
         logctx->configs[level].fp = NULL;
-        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO;
+        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO | USLOG_ITEM_ENABLE_PTHREAD_ID ;
         logctx->configs[level].prefix = " v0   : ";
         logctx->configs[level].suffix = "";
 
         level = index_block*8 + (USLOG_USTANDARD_TEST);
         logctx->configs[level].fp = stdout;
-        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO;
+        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO | USLOG_ITEM_ENABLE_PTHREAD_ID ;
         logctx->configs[level].prefix = " test : ";
         logctx->configs[level].suffix = "";
 
         level = index_block*8 + (USLOG_USTANDARD_INFO);
         logctx->configs[level].fp = stdout;
-        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO;
+        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO | USLOG_ITEM_ENABLE_PTHREAD_ID ;
         logctx->configs[level].prefix = " info : ";
         logctx->configs[level].suffix = "";
 
         level = index_block*8 + (USLOG_USTANDARD_DEBUG);
         logctx->configs[level].fp = NULL;
-        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO;
+        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO | USLOG_ITEM_ENABLE_PTHREAD_ID ;
         logctx->configs[level].prefix = " debug: ";
         logctx->configs[level].suffix = "";
 
         level = index_block*8 + (USLOG_USTANDARD_ERROR);
         logctx->configs[level].fp = stderr;
-        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO;
+        logctx->configs[level].item = USLOG_ITEM_ENABLE_FILEINFO | USLOG_ITEM_ENABLE_PTHREAD_ID ;
         logctx->configs[level].prefix = " error: ";
         logctx->configs[level].suffix = "";
     }
@@ -190,8 +200,12 @@ struct pthread_id{
 #define NUM_PTHS    1024
 static struct pthread_id kpths[NUM_PTHS];
 static int kpths_num = 0;
+static pthread_mutex_t kpths_lock = PTHREAD_MUTEX_INITIALIZER; 
+
+
 int uget_pthread_id(void)
 {
+    pthread_mutex_lock(&kpths_lock);
     int id_ret = -1;
     pthread_t pth = pthread_self();
 
@@ -210,6 +224,7 @@ int uget_pthread_id(void)
         kpths[id_ret].id = id_ret;
     }
 
+    pthread_mutex_unlock(&kpths_lock);
     return id_ret;
 }
 
@@ -247,7 +262,7 @@ int uslog_fprintf(struct uslog_data** logctx, int level,
         return retn;
     }
 
-    #define LEN_STR     (1280)
+    #define LEN_STR     (10240)
     char str[LEN_STR];
     size_t len_str = 0;
     size_t n = 0;

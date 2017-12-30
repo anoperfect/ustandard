@@ -41,5 +41,5 @@
 
 #include <setjmp.h>
 
-#define _Bool unsigned char
+
 #endif /* ustandard_sys.h */

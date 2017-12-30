@@ -1,5 +1,12 @@
-#include "ustandard/ustandard_sys.h"
+#define _GNU_SOURCE     1
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <pthread.h>
+#include <unistd.h>
 #include "ustandard/umalloc.h"
+
 struct umalloc_node {
     void*           ptr; 
     size_t          size; 

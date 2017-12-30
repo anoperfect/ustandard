@@ -1,9 +1,9 @@
 #include "ustandard/ustandard_sys.h"
 
 
-
-
+#include <sys/cdefs.h>
 #include "ustandard/utypes.h"
+#if 0
 #include "ustandard/ufunction.h"
 #include "ustandard/uslog.h"
 #include "ustandard/udebug.h"
@@ -66,3 +66,4 @@
 
 
 
+#endif

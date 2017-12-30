@@ -2,7 +2,7 @@
 #include "ustandard/udevelop.h"
 #include "ustandard/ubuffer_move.h"
 
-
+/*
 void* ubuffer_move_left(void* p, size_t size, size_t size_move)
 {
     void* dest = p - size_move;
@@ -28,3 +28,4 @@ void* ubuffer_move_right(void* p, size_t size, size_t size_move)
 
     return p;
 }
+*/

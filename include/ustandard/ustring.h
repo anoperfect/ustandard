@@ -32,8 +32,8 @@ extern size_t  kn_chars_crlf;
 #define UST_CHARS_CRLF          kchars_crlf
 #define UST_N_CHARS_CRLF        kn_chars_crlf
 
-char* ustrtrim_chars(char* s, int trim_left, int trim_rignt, 
-        char chars[], size_t n);
+char* ustrtrim_chars(char* s, bool trim_left, bool trim_rignt, 
+        const char* chars, size_t n);
 
 char* ustrtrim(char* s);
 
@@ -69,6 +69,10 @@ int ustrncasecmp_tailer(const char* s1, const char* s2, size_t n);
 char ustrtail(const char* s);
 
 
+
+
+/* if string last char equal to ch, cut it. usually used to cut \n if the reading line */
+char* ustrcut_char_last(char* output, char ch);
 
 
 /* find. */
