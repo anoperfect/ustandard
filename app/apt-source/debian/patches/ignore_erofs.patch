@@ -1,0 +1,13 @@
+--- procps-3.2.8.orig/sysctl.c
++++ procps-3.2.8/sysctl.c
+@@ -313,6 +313,10 @@ static int WriteSetting(const char *sett
+          fprintf(stderr, ERR_PERMISSION_DENIED, outname);
+          rc = 0;
+          break;
++      case EROFS:
++         fprintf(stderr, ERR_UNKNOWN_WRITING, strerror(errno), outname);
++         rc = 0;
++         break;
+       default:
+          fprintf(stderr, ERR_UNKNOWN_WRITING, strerror(errno), outname);
+          rc = -1;

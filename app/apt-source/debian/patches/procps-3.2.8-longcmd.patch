@@ -1,0 +1,32 @@
+Description: fix the problem with truncated output lines to 2048 characters
+Author: Karel Zak <kzak@redhat.com> and Olivier Fourdan <ofourdan@redhat.com>
+Bug-Redhat: https://bugzilla.redhat.com/show_bug.cgi?id=134516
+Bug-Redhat: https://bugzilla.redhat.com/show_bug.cgi?id=487700
+Reviewed-by: Craig Small <csmall@debian.org>
+Last-Update: 2010-11-17
+--- a/proc/readproc.c
++++ b/proc/readproc.c
+@@ -458,17 +458,20 @@
+     if(fd==-1) return NULL;
+ 
+     /* read whole file into a memory buffer, allocating as we go */
+-    while ((n = read(fd, buf, sizeof buf - 1)) > 0) {
++    while ((n = read(fd, buf, sizeof buf - 1)) >= 0) {
+ 	if (n < (int)(sizeof buf - 1))
+ 	    end_of_file = 1;
+-	if (n == 0 && rbuf == 0)
++	if (n == 0 && rbuf == 0) {
++	    close(fd);
+ 	    return NULL;	/* process died between our open and read */
++	}
+ 	if (n < 0) {
+ 	    if (rbuf)
+ 		free(rbuf);
++	    close(fd);
+ 	    return NULL;	/* read error */
+ 	}
+-	if (end_of_file && buf[n-1])		/* last read char not null */
++	if (end_of_file && (n == 0 || buf[n-1]))/* last read char not null */
+ 	    buf[n++] = '\0';			/* so append null-terminator */
+ 	rbuf = xrealloc(rbuf, tot + n);		/* allocate more memory */
+ 	memcpy(rbuf + tot, buf, n);		/* copy buffer into it */

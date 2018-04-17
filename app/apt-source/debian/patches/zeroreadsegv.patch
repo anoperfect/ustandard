@@ -1,0 +1,21 @@
+Description: avoid SEGV if file2str should read zero bytes
+ avoid SEGV if file2str should read zero bytes. This is a backport of 526bc5df
+ from upstream.  When utility buffers were introduced for file2str read
+ requests, a subtle change was inadvertently introduced such that a read of 
+ zero no longer returns a -1 value. This returns to the behavior to returning 
+ -1 on zero byte reads. 
+
+Author: Dave Chiluk <chiluk@canonical.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1242746
+Origin: upstream https://www.gitorious.org/procps/procps/commit/526bc5dfa924177e68be0123bd67e3370955f924
+
+--- procps-3.2.8.orig/proc/readproc.c
++++ procps-3.2.8/proc/readproc.c
+@@ -465,6 +465,7 @@ static int file2str(const char *director
+     };
+     ub->buf[tot_read] = '\0';
+     close(fd);
++    if (unlikely(tot_read < 1)) return -1;
+     return tot_read;
+  #undef buffGRW
+ }

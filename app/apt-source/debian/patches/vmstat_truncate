@@ -1,0 +1,44 @@
+Description: truncate the vmstat figure to 32 bits
+Bug-Debian: http://bugs.debian.org/620557
+Author: David Fries <david@fries.net>
+Reviewed-by: Craig Small <csmall@debian.org>
+Last-Update: 2011-07-25
+--- a/proc/sysinfo.c
++++ b/proc/sysinfo.c
+@@ -774,6 +774,11 @@
+   {"slabs_scanned",       &vm_slabs_scanned},
+   };
+   const int vm_table_count = sizeof(vm_table)/sizeof(vm_table_struct);
++#if __SIZEOF_LONG__ == 4
++  unsigned long long slotll;
++#endif
++   
++
+ 
+   vm_pgalloc = 0;
+   vm_pgrefill = 0;
+@@ -797,7 +802,15 @@
+     );
+     head = tail+1;
+     if(!found) goto nextline;
++#if __SIZEOF_LONG__ == 4
++    // A 32 bit kernel would have already truncated the value, a 64 bit kernel
++    // doesn't need to.  Truncate here to let 32 bit programs to continue to get
++    // truncated values.  It's that or change the API for a larger data type.
++    slotll = strtoull(head,&tail,10);
++    *(found->slot) = (unsigned long)slotll;
++#else
+     *(found->slot) = strtoul(head,&tail,10);
++#endif
+ nextline:
+ 
+ //if(found) fprintf(stderr,"%s=%d\n",found->name,*(found->slot));
+@@ -867,7 +880,7 @@
+       break;
+     }
+     fields = sscanf(buff, " %*d %*d %15s %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %u",
+-            &devname, &dummy);
++            devname, &dummy);
+     if (fields == 2 && is_disk(devname)){
+       (*disks) = realloc(*disks, (cDisk+1)*sizeof(struct disk_stat));
+       sscanf(buff,  "   %*d    %*d %15s %u %u %llu %u %u %u %llu %u %u %u %u",

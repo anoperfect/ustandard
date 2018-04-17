@@ -23,6 +23,7 @@ static struct umalloc_node klist = {0};
 
 /* set to enable monitor or not. */
 static int kmonitor_on = 0;
+static FILE* kverbose_output = NULL;
 
 
 typedef enum {
@@ -39,9 +40,6 @@ static umalloc_failed_e kmalloc_on_alloc_failed = umalloc_failed_exit_e;
 #define logerr(x...) fprintf(stderr, x)
 
 
-
-
-
 void umalloc_setopt_alloc_failed(umalloc_failed_e opt)
 {
     if(opt >= umalloc_failed_exit_e && opt < umalloc_failed_line_e) {
@@ -51,8 +49,6 @@ void umalloc_setopt_alloc_failed(umalloc_failed_e opt)
         logerr("%s : invalid opt.\n", __FUNCTION__);
     }
 }
-
-
 
 
 static pthread_mutex_t klock = PTHREAD_MUTEX_INITIALIZER;
@@ -259,6 +255,10 @@ void* umalloc(size_t size,
         }
     }
 
+    if(kverbose_output) {
+        fprintf(kverbose_output, "----------alloc[%6zd] %20p, at %36s %36s %3u\n", size, ptr, file, function, line);
+    }
+
     return ptr;
 }
 
@@ -283,6 +283,10 @@ int ufree(void* ptr,
     else {
         logerr("ufree NULL pointer on %s: %s %d.\n", file, function, line);
         ret = -1;
+    }
+
+    if(kverbose_output) {
+        fprintf(kverbose_output, "----------free          %20p, at %36s %36s %3u\n", ptr, file, function, line);
     }
 
     return ret;
@@ -335,6 +339,10 @@ void* urealloc(void* ptr_ori, size_t size,
         }
     }
 
+    if(kverbose_output) {
+        fprintf(kverbose_output, "----------realloc[%zd] %p to %p, at %36s %36s %3u\n", size, ptr_ori, ptr, file, function, line);
+    }
+
     return ptr;
 }
 
@@ -353,7 +361,7 @@ size_t umalloc_query(char* s, size_t size)
 
     struct umalloc_node* node = klist.next;
     while(NULL != node) {
-        int n = snprintf(s+idx, size-idx, "\t%p %-10zd   at %-36s,%-20s,%-4d\n", 
+        int n = snprintf(s+idx, size-idx, "\t%20p %-10zd   at %-36s,%-20s,%-4d\n", 
                 node->ptr, node->size, node->file, node->function, node->line);
         if(n < 0) {
             break;
@@ -395,10 +403,17 @@ int umalloc_query_clear(void)
 }
 
 
-int umalloc_enable(int set)
+int umalloc_enable_monitor(int is_enabled)
 {
     int ret = 0;
-    kmonitor_on = set;
+    kmonitor_on = is_enabled;
     return ret;
 }
 
+
+int umalloc_verbose_output(FILE* fp)
+{
+    int ret = 0;
+    kverbose_output = fp;
+    return ret;
+}

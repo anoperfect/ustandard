@@ -205,13 +205,6 @@ int ubuffer_replace(const void* src, size_t len_src,
 {
     int ret = 0;
 
-    struct ucbuf buf;
-    struct ucbuf buf_to;
-
-    long num = 0;
-    long total = (2*nranges + 1);
-    struct ucbuf* bufs = um_malloc(sizeof(*bufs) * total);
-
     /* if no ranges, return the dup buffer. */
     if(0 == nranges) {
         *ppdest = um_malloc(len_src);
@@ -220,6 +213,13 @@ int ubuffer_replace(const void* src, size_t len_src,
 
         return ret;
     }
+
+    struct ucbuf buf;
+    struct ucbuf buf_to;
+
+    long num = 0;
+    long total = (2*nranges + 1);
+    struct ucbuf* bufs = um_malloc(sizeof(*bufs) * total);
 
 	int i;
     for(i=0; i<nranges; i++) {

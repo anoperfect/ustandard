@@ -1,0 +1,266 @@
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -MM -MG proc/alloc.c proc/devname.c proc/escape.c proc/ksym.c proc/pwcache.c proc/readproc.c proc/sig.c proc/slab.c proc/smaps.c proc/sysinfo.c proc/version.c proc/whattime.c > proc/.depend
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o uptime.o uptime.c
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/alloc.c -o proc/alloc.o
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/devname.c -o proc/devname.o
+proc/devname.c:54:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/devname.c: In function ‘load_drivers’:
+proc/devname.c:87:12: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/escape.c -o proc/escape.o
+In file included from proc/escape.h:7:0,
+                 from proc/escape.c:15:
+proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from proc/escape.h:7:0,
+                 from proc/escape.c:15:
+proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/escape.c: In function ‘escape_command’:
+proc/escape.c:184:23: warning: to be safe all intermediate pointers in cast from ‘char ** const’ to ‘const char **’ must be ‘const’ qualified [-Wcast-qual]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/ksym.c -o proc/ksym.o
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/pwcache.c -o proc/pwcache.o
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/readproc.c -o proc/readproc.o
+In file included from proc/readproc.c:13:0:
+proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from proc/readproc.c:13:0:
+proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/readproc.c: In function ‘status2proc’:
+proc/readproc.c:176:9: warning: array subscript has type ‘char’ [-Wchar-subscripts]
+proc/readproc.c:176:9: warning: array subscript has type ‘char’ [-Wchar-subscripts]
+proc/readproc.c:176:9: warning: array subscript has type ‘char’ [-Wchar-subscripts]
+proc/readproc.c: In function ‘stat2proc’:
+proc/readproc.c:391:5: warning: use of assignment suppression and length modifier together in gnu_scanf format [-Wformat]
+proc/readproc.c:391:5: warning: use of assignment suppression and length modifier together in gnu_scanf format [-Wformat]
+proc/readproc.c: In function ‘statm2proc’:
+proc/readproc.c:403:9: warning: variable ‘num’ set but not used [-Wunused-but-set-variable]
+proc/readproc.c: At top level:
+proc/readproc.c:41:27: warning: ‘unhex’ defined but not used [-Wunused-function]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/sig.c -o proc/sig.o
+proc/sig.c:56:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/sig.c: In function ‘pretty_print_signals’:
+proc/sig.c:217:5: warning: format not a string literal and no format arguments [-Wformat-security]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/slab.c -o proc/slab.o
+proc/slab.c:99:1: warning: multi-line comment [-Wcomment]
+proc/slab.c:104:1: warning: multi-line comment [-Wcomment]
+proc/slab.c:111:1: warning: multi-line comment [-Wcomment]
+proc/slab.c:116:1: warning: multi-line comment [-Wcomment]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/smaps.c -o proc/smaps.o
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/sysinfo.c -o proc/sysinfo.o
+proc/sysinfo.c: In function ‘getstat’:
+proc/sysinfo.c:391:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+proc/sysinfo.c: In function ‘getrunners’:
+proc/sysinfo.c:352:9: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic -DVERSION=\"3\" -DSUBVERSION=\"2\" -DMINORVERSION=\"8\" -c -o proc/version.o proc/version.c
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -DSHARED=1 -fpic proc/whattime.c -o proc/whattime.o
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -Wl,-warn-common  -shared -Wl,-soname,libproc-3.2.8.so -Wl,--version-script=proc/library.map -o proc/libproc-3.2.8.so proc/alloc.o proc/devname.o proc/escape.o proc/ksym.o proc/pwcache.o proc/readproc.o proc/sig.o proc/slab.o proc/smaps.o proc/sysinfo.o proc/version.o proc/whattime.o -lc
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions uptime.o proc/libproc-3.2.8.so -Wl,-warn-common  -o uptime
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o tload.o tload.c
+tload.c:33:12: warning: redundant redeclaration of ‘optind’ [-Wredundant-decls]
+/usr/include/getopt.h:73:12: note: previous declaration of ‘optind’ was here
+tload.c:34:14: warning: redundant redeclaration of ‘optarg’ [-Wredundant-decls]
+/usr/include/getopt.h:59:14: note: previous declaration of ‘optarg’ was here
+tload.c: In function ‘main’:
+tload.c:152:7: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+tload.c:153:7: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions tload.o proc/libproc-3.2.8.so -Wl,-warn-common  -o tload
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o free.o free.c
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions free.o proc/libproc-3.2.8.so -Wl,-warn-common  -o free
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions  -c w.c
+In file included from w.c:10:0:
+proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from w.c:10:0:
+proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+w.c: In function ‘getproc’:
+w.c:161:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+w.c:161:44: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions w.o proc/libproc-3.2.8.so -Wl,-warn-common  -o w
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o top.o top.c
+In file included from top.c:49:0:
+proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from top.c:49:0:
+proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+In file included from top.c:56:0:
+top.h:193:18: warning: padding struct to align ‘head’ [-Wpadded]
+top.h:200:1: warning: padding struct size to alignment boundary [-Wpadded]
+top.h:208:1: warning: padding struct size to alignment boundary [-Wpadded]
+top.h:217:1: warning: padding struct size to alignment boundary [-Wpadded]
+top.h:342:1: warning: padding struct size to alignment boundary [-Wpadded]
+top.c: In function ‘capsmk’:
+top.c:506:7: warning: value computed is not used [-Wunused-value]
+top.c:507:7: warning: value computed is not used [-Wunused-value]
+top.c:508:7: warning: value computed is not used [-Wunused-value]
+top.c:511:10: warning: value computed is not used [-Wunused-value]
+top.c:512:10: warning: value computed is not used [-Wunused-value]
+top.c:522:7: warning: value computed is not used [-Wunused-value]
+top.c:523:7: warning: value computed is not used [-Wunused-value]
+top.c:524:7: warning: value computed is not used [-Wunused-value]
+top.c:525:7: warning: value computed is not used [-Wunused-value]
+top.c:526:7: warning: value computed is not used [-Wunused-value]
+top.c: In function ‘show_special’:
+top.c:691:12: warning: assignment discards ‘const’ qualifier from pointer target type [enabled by default]
+top.c: In function ‘good_uid’:
+top.c:854:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+top.c:855:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+top.c:856:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+top.c:859:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+top.c: In function ‘prochlp’:
+top.c:1075:4: warning: passing argument 5 of ‘bsearch’ from incompatible pointer type [enabled by default]
+/usr/include/stdlib.h:755:14: note: expected ‘__compar_fn_t’ but argument is of type ‘int (*)(const struct HST_t *, const struct HST_t *)’
+top.c: In function ‘summary_show’:
+top.c:2959:7: warning: passing argument 5 of ‘select’ discards ‘volatile’ qualifier from pointer target type [enabled by default]
+/usr/include/x86_64-linux-gnu/sys/select.h:107:12: note: expected ‘struct timeval * __restrict__’ but argument is of type ‘volatile struct timeval *’
+top.c: In function ‘task_show’:
+top.c:3179:4: warning: assignment discards ‘const’ qualifier from pointer target type [enabled by default]
+top.c: In function ‘window_show’:
+top.c:3205:4: warning: assignment discards ‘const’ qualifier from pointer target type [enabled by default]
+top.c: In function ‘main’:
+top.c:3379:10: warning: passing argument 5 of ‘select’ discards ‘volatile’ qualifier from pointer target type [enabled by default]
+/usr/include/x86_64-linux-gnu/sys/select.h:107:12: note: expected ‘struct timeval * __restrict__’ but argument is of type ‘volatile struct timeval *’
+top.c:3398:13: warning: passing argument 5 of ‘select’ discards ‘volatile’ qualifier from pointer target type [enabled by default]
+/usr/include/x86_64-linux-gnu/sys/select.h:107:12: note: expected ‘struct timeval * __restrict__’ but argument is of type ‘volatile struct timeval *’
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions top.o proc/libproc-3.2.8.so -Wl,-warn-common  -o top -lncurses
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o vmstat.o vmstat.c
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions vmstat.o proc/libproc-3.2.8.so -Wl,-warn-common  -o vmstat
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o watch.o watch.c
+watch.c: In function ‘main’:
+watch.c:255:12: warning: ignoring return value of ‘asprintf’, declared with attribute warn_unused_result [-Wunused-result]
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions watch.o -Wl,-warn-common  -o watch -lncurses
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o skill.o skill.c
+skill.c: In function ‘check_proc’:
+skill.c:140:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions skill.o proc/libproc-3.2.8.so -Wl,-warn-common  -o skill
+ln -f skill snice
+ln -f skill kill
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o sysctl.o sysctl.c
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions sysctl.o proc/libproc-3.2.8.so -Wl,-warn-common  -o sysctl
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o pmap.o pmap.c
+In file included from pmap.c:24:0:
+proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from pmap.c:24:0:
+proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+pmap.c: In function ‘main’:
+pmap.c:311:13: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+pmap.c:314:18: warning: operation on ‘arg2’ may be undefined [-Wsequence-point]
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions pmap.o proc/libproc-3.2.8.so -Wl,-warn-common  -o pmap
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o pgrep.o pgrep.c
+In file included from pgrep.c:30:0:
+proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from pgrep.c:30:0:
+proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+pgrep.c:158:5: warning: no previous prototype for ‘fcntl_lock’ [-Wmissing-prototypes]
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions pgrep.o proc/libproc-3.2.8.so -Wl,-warn-common  -o pgrep
+ln -f pgrep pkill
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o slabtop.o slabtop.c
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions slabtop.o proc/libproc-3.2.8.so -Wl,-warn-common  -o slabtop -lncurses
+cc -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -c -o pwdx.o pwdx.c
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions pwdx.o proc/libproc-3.2.8.so -Wl,-warn-common  -o pwdx
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions ps/display.c -o ps/display.o
+In file included from ps/../proc/escape.h:7:0,
+                 from ps/common.h:16,
+                 from ps/display.c:31:
+ps/../proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from ps/../proc/escape.h:7:0,
+                 from ps/common.h:16,
+                 from ps/display.c:31:
+ps/../proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/../proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+In file included from ps/display.c:31:0:
+ps/common.h:207:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:219:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:242:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:248:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:258:1: warning: padding struct size to alignment boundary [-Wpadded]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions ps/global.c -o ps/global.o
+In file included from ps/../proc/escape.h:7:0,
+                 from ps/common.h:16,
+                 from ps/global.c:24:
+ps/../proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from ps/../proc/escape.h:7:0,
+                 from ps/common.h:16,
+                 from ps/global.c:24:
+ps/../proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/../proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+In file included from ps/global.c:24:0:
+ps/common.h:207:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:219:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:242:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:248:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:258:1: warning: padding struct size to alignment boundary [-Wpadded]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions ps/help.c -o ps/help.o
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions ps/output.c -o ps/output.o
+In file included from ps/output.c:58:0:
+ps/../proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from ps/output.c:58:0:
+ps/../proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/../proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+In file included from ps/output.c:64:0:
+ps/common.h:207:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:219:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:242:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:248:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:258:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/output.c: In function ‘pr_args’:
+ps/output.c:341:6: warning: the address of ‘forest_prefix’ will always evaluate as ‘true’ [-Waddress]
+ps/output.c:351:24: warning: to be safe all intermediate pointers in cast from ‘char ** const’ to ‘const char **’ must be ‘const’ qualified [-Wcast-qual]
+ps/output.c: In function ‘pr_comm’:
+ps/output.c:368:6: warning: the address of ‘forest_prefix’ will always evaluate as ‘true’ [-Waddress]
+ps/output.c:378:24: warning: to be safe all intermediate pointers in cast from ‘char ** const’ to ‘const char **’ must be ‘const’ qualified [-Wcast-qual]
+ps/output.c: In function ‘pr_fname’:
+ps/output.c:393:6: warning: the address of ‘forest_prefix’ will always evaluate as ‘true’ [-Waddress]
+ps/output.c: In function ‘pr_nice’:
+ps/output.c:592:31: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+ps/output.c: In function ‘pr_rtprio’:
+ps/output.c:629:31: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+ps/output.c: In function ‘pr_sched’:
+ps/output.c:633:15: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+ps/output.c: In function ‘pr_stime’:
+ps/output.c:930:3: warning: pointer targets in passing argument 1 of ‘localtime’ differ in signedness [-Wpointer-sign]
+/usr/include/time.h:237:19: note: expected ‘const time_t *’ but argument is of type ‘long unsigned int *’
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions ps/parser.c -o ps/parser.o
+In file included from ps/../proc/escape.h:7:0,
+                 from ps/common.h:16,
+                 from ps/parser.c:28:
+ps/../proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from ps/../proc/escape.h:7:0,
+                 from ps/common.h:16,
+                 from ps/parser.c:28:
+ps/../proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/../proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+In file included from ps/parser.c:28:0:
+ps/common.h:207:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:219:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:242:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:248:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:258:1: warning: padding struct size to alignment boundary [-Wpadded]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions ps/select.c -o ps/select.o
+In file included from ps/../proc/escape.h:7:0,
+                 from ps/common.h:16,
+                 from ps/select.c:16:
+ps/../proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from ps/../proc/escape.h:7:0,
+                 from ps/common.h:16,
+                 from ps/select.c:16:
+ps/../proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/../proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+In file included from ps/select.c:16:0:
+ps/common.h:207:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:219:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:242:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:248:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:258:1: warning: padding struct size to alignment boundary [-Wpadded]
+cc -c -D_GNU_SOURCE -I proc -I/usr/include/ncurses -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions ps/sortformat.c -o ps/sortformat.o
+In file included from ps/sortformat.c:21:0:
+ps/../proc/readproc.h:76:2: warning: padding struct to align ‘start_code’ [-Wpadded]
+In file included from ps/sortformat.c:21:0:
+ps/../proc/readproc.h:174:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/../proc/readproc.h:186:1: warning: padding struct size to alignment boundary [-Wpadded]
+In file included from ps/sortformat.c:23:0:
+ps/common.h:207:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:219:1: warning: padding struct size to alignment boundary [-Wpadded]
+ps/common.h:242:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:248:15: warning: padding struct to align ‘spec’ [-Wpadded]
+ps/common.h:258:1: warning: padding struct size to alignment boundary [-Wpadded]
+cc -fno-common -ffast-math -W -Wall -Wshadow -Wcast-align -Wredundant-decls -Wbad-function-cast -Wcast-qual -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -O2 -s -m64 -Wdeclaration-after-statement -Wpadded -Wstrict-aliasing -fweb -frename-registers -fomit-frame-pointer -fno-inline-functions -Wl,-warn-common  -o ps/ps ps/display.o ps/global.o ps/help.o ps/output.o ps/parser.o ps/select.o ps/sortformat.o proc/libproc-3.2.8.so 

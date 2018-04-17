@@ -1,0 +1,19 @@
+Description: Ignore EACCESS when writing a new setting
+ If we are running in a container, we're not allowed to write to any
+ non-namespaced sysctls.
+Author: Serge Hallyn <serge.hallyn@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/procps/+bug/1157643
+
+Index: precise/sysctl.c
+===================================================================
+--- precise.orig/sysctl.c
++++ precise/sysctl.c
+@@ -311,7 +311,7 @@
+          break;
+       case EACCES:
+          fprintf(stderr, ERR_PERMISSION_DENIED, outname);
+-         rc = -1;
++         rc = 0;
+          break;
+       default:
+          fprintf(stderr, ERR_UNKNOWN_WRITING, strerror(errno), outname);

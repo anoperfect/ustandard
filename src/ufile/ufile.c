@@ -382,6 +382,51 @@ int ufile_create(const char* path)
 }
 
 
+int ufile_replaces(const char* filename, const char* filename_to, 
+        const char* needle, const char* to)
+{
+    uslog_check_arg(filename != NULL    , -1);
+    uslog_check_arg(filename_to != NULL , -1);
+    uslog_check_arg(needle != NULL      , -1);
+    uslog_check_arg(to != NULL          , -1);
+
+    int ret = 0;
+
+    size_t size = 0;
+    char* content = ufile_dup(filename, &size);
+    if(!content) {
+        ret = -1;
+        return ret;
+    }
+
+    if(NULL == strstr(content, needle)) {
+        um_free(content);
+        ret = 0;
+        return ret;
+    }
+
+    ustr_t str;
+    ret = ustr_replaces(content, needle, to, &str);
+    if(0 != ret) {
+        um_free(content);
+        return ret;
+    }
+
+    size_t len = strlen(str.s);
+    size_t size_write = ufile_write(filename_to, "w", str.s, len);
+    if(size_write != len) {
+        ret = -1;
+    }
+    
+    um_free(content);
+    um_free(str.s);
+
+    return ret;
+}
+
+
+
+
 
 
 

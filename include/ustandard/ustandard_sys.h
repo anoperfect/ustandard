@@ -1,6 +1,10 @@
 #ifndef __USTANDARD_SYS_H__
 #define __USTANDARD_SYS_H__
-#define _GNU_SOURCE     1
+
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

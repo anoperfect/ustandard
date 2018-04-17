@@ -1,0 +1,6 @@
+
+# PowerPC:
+# Emulate the middle mouse button with F11 and the right with F12.
+dev.mac_hid.mouse_button_emulation = 1
+dev.mac_hid.mouse_button2_keycode = 87
+dev.mac_hid.mouse_button3_keycode = 88

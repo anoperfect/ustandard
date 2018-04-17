@@ -1,1 +1,0 @@
-vim /usr/lib/gcc/x86_64-linux-gnu/4.6/include/stdbool.h /usr/lib/syslinux/com32/include/stdbool.h /usr/include/c++/4.6/tr1/stdbool.h

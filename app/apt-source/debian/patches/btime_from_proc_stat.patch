@@ -1,0 +1,131 @@
+Description: Read the system boot time from /proc instead of computing
+ Read the time of system boot from /proc/stat (entry: btime) instead
+ of computing it as the difference between the current time and the
+ uptime. This is the only way to get a consistent result which won't
+ possibly change from one run to the next.
+ .
+ The problems with the original code were:
+ * Both the current time and the uptime are rounded down to the second,
+   but the system doesn't boot on an integer second value so they do not
+   tick at the same moment. Thus, the rounding errors can cause a one
+   second difference from one run to the next.
+ * We can't read the uptime and the current time at the exact same moment
+   anyway, so the time difference we compute is bound to be inaccurate.
+Bug-Redhat: https://bugzilla.redhat.com/show_bug.cgi?id=222251
+Author: Jean Delvare <jdelvare@suse.de>
+Reviewed-by: Craig Small <csmall@debian.org>
+Last-Update: 2010-11-18
+
+--- a/proc/sysinfo.c
++++ b/proc/sysinfo.c
+@@ -90,6 +90,35 @@
+     return up;	/* assume never be zero seconds in practice */
+ }
+ 
++unsigned long getbtime(void) {
++    static unsigned long btime = 0;
++    FILE *f;
++
++    if (btime)
++	return btime;
++
++    /* /proc/stat can get very large on multi-CPU systems so we
++       can't use FILE_TO_BUF */
++    if (!(f = fopen(STAT_FILE, "r"))) {
++	fputs(BAD_OPEN_MESSAGE, stderr);
++	fflush(NULL);
++	_exit(102);
++    }
++
++    while ((fgets(buf, sizeof buf, f))) {
++        if (sscanf(buf, "btime %lu", &btime) == 1)
++            break;
++    }
++    fclose(f);
++
++    if (!btime) {
++	fputs("missing btime in " STAT_FILE "\n", stderr);
++	exit(1);
++    }
++
++    return btime;
++}
++
+ /***********************************************************************
+  * Some values in /proc are expressed in units of 1/HZ seconds, where HZ
+  * is the kernel clock tick rate. One of these units is called a jiffy.
+--- a/proc/sysinfo.h
++++ b/proc/sysinfo.h
+@@ -17,6 +17,7 @@
+ #endif
+ 
+ extern int        uptime (double *uptime_secs, double *idle_secs);
++extern unsigned long getbtime(void);
+ extern void       loadavg(double *av1, double *av5, double *av15);
+ 
+ 
+--- a/ps/output.c
++++ b/ps/output.c
+@@ -77,7 +77,6 @@
+ static int wide_signals;  /* true if we have room */
+ 
+ static unsigned long seconds_since_1970;
+-static unsigned long time_of_boot;
+ static unsigned long page_shift;
+ 
+ 
+@@ -856,7 +855,7 @@
+ static int pr_bsdstart(char *restrict const outbuf, const proc_t *restrict const pp){
+   time_t start;
+   time_t seconds_ago;
+-  start = time_of_boot + pp->start_time / Hertz;
++  start = getbtime() + pp->start_time / Hertz;
+   seconds_ago = seconds_since_1970 - start;
+   if(seconds_ago < 0) seconds_ago=0;
+   if(seconds_ago > 3600*24)  strcpy(outbuf, ctime(&start)+4);
+@@ -970,7 +969,7 @@
+ 
+ static int pr_lstart(char *restrict const outbuf, const proc_t *restrict const pp){
+   time_t t;
+-  t = time_of_boot + pp->start_time / Hertz;
++  t = getbtime() + pp->start_time / Hertz;
+   return snprintf(outbuf, COLWID, "%24.24s", ctime(&t));
+ }
+ 
+@@ -993,7 +992,7 @@
+   our_time = localtime(&seconds_since_1970);   /* not reentrant */
+   tm_year = our_time->tm_year;
+   tm_yday = our_time->tm_yday;
+-  t = time_of_boot + pp->start_time / Hertz;
++  t = getbtime() + pp->start_time / Hertz;
+   proc_time = localtime(&t); /* not reentrant, this corrupts our_time */
+   fmt = "%H:%M";                                   /* 03:02 23:59 */
+   if(tm_yday != proc_time->tm_yday) fmt = "%b%d";  /* Jun06 Aug27 */
+@@ -1004,7 +1003,7 @@
+ static int pr_start(char *restrict const outbuf, const proc_t *restrict const pp){
+   time_t t;
+   char *str;
+-  t = time_of_boot + pp->start_time / Hertz;
++  t = getbtime() + pp->start_time / Hertz;
+   str = ctime(&t);
+   if(str[8]==' ')  str[8]='0';
+   if(str[11]==' ') str[11]='0';
+@@ -2046,7 +2045,6 @@
+   // available space:  page_size*outbuf_pages-SPACE_AMOUNT
+ 
+   seconds_since_1970 = time(NULL);
+-  time_of_boot = seconds_since_1970 - seconds_since_boot;
+ 
+   meminfo();
+ 
+--- a/proc/library.map
++++ b/proc/library.map
+@@ -10,7 +10,7 @@
+   openproc; closeproc; freeproc; allocsupgrp; freesupgrp;
+   tty_to_dev; dev_to_tty; open_psdb_message; open_psdb; lookup_wchan;
+   display_version; procps_version; linux_version_code;
+-  Hertz; smp_num_cpus; have_privs;
++  Hertz; smp_num_cpus; have_privs; getbtime;
+   sprint_uptime; uptime; user_from_uid; print_uptime; loadavg;
+   pretty_print_signals; print_given_signals; unix_print_signals; signal_name_to_number; signal_number_to_name;
+   meminfo; vminfo; getstat; getdiskstat; getpartitions_num; getslabinfo; get_pid_digits;

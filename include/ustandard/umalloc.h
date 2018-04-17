@@ -32,9 +32,8 @@ void* urealloc(void* ptr, size_t size,
 
 size_t umalloc_query(char* s, size_t size);
 int umalloc_query_clear(void);
-int umalloc_enable_monitor(int set); /* 0 to disbale, or enable. default disable. */
-
-
+int umalloc_enable_monitor(int is_enabled); /*0 minitor off, other on. default 0. */
+int umalloc_verbose_output(FILE* fp);
 
 
 

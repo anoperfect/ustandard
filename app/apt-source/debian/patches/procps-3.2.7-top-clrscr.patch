@@ -1,0 +1,23 @@
+Description: clear screen after fields selection
+Author: Tomas Smetana <tsmetana@redhat.com>
+Bug-Redhat: https://bugzilla.redhat.com/show_bug.cgi?id=440694
+Reviewed-by: Craig Small <csmall@debian.org>
+Last-Update: 2010-11-18
+--- a/top.c
++++ b/top.c
+@@ -2102,6 +2102,7 @@
+       *p = x + 'A';
+    Curwin->rc.sortindx = x;
+    putp(Cap_curs_norm);
++   putp(Cap_clr_scr);
+ }
+ 
+ 
+@@ -2127,6 +2128,7 @@
+          *p = i + 'A';
+    }
+    putp(Cap_curs_norm);
++   putp(Cap_clr_scr);
+ }
+ 
+ /*######  Windows/Field Groups support  #################################*/

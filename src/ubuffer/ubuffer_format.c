@@ -12,6 +12,8 @@ int ubuffer_format(char* dest, size_t size_dest,
         return ret;
     }
 
+    const char* spaces = "";
+
     if(type == e_ubuffer_char_type_default) {
         type = e_ubuffer_char_type_0x;
     }
@@ -31,10 +33,10 @@ int ubuffer_format(char* dest, size_t size_dest,
 
             case e_ubuffer_char_type_0xprint:
             if(!isprint(((char*)ptr)[i])) {
-                n = snprintf(dest+idx, size_dest-idx, "0x%02x%c", ((unsigned char*)ptr)[i], space);
+                n = snprintf(dest+idx, size_dest-idx, " 0x%02x%s ", ((unsigned char*)ptr)[i], spaces);
             }
             else {
-                n = snprintf(dest+idx, size_dest-idx, "%c   %c", ((unsigned char*)ptr)[i], space);
+                n = snprintf(dest+idx, size_dest-idx, "%c%s", ((unsigned char*)ptr)[i], spaces);
             }
             break;
 

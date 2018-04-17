@@ -48,6 +48,10 @@ size_t ufile_write_string(const char* path, const char* mode, const char* str);
 size_t ufile_writevs(const char* path, const char* mode, const char* fmt, ...);
 
 
+int ufile_replaces(const char* filename, const char* filename_to, 
+        const char* needle, const char* to);
+
+
 /*
     文件不存在时,创建文件.
 */

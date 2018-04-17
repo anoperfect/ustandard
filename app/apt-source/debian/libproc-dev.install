@@ -1,0 +1,3 @@
+proc/*.h  usr/include/proc
+static/libproc.a usr/lib
+static/libproc.so usr/lib

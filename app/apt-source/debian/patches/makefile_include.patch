@@ -1,0 +1,16 @@
+Description: Explicitly include module.mk files in certain order
+ GNU make 3.82 changes the order and breaks making the binaries
+Bug-Debian: http://bugs.debian.org/603759
+Author: Chris Coleman <chrsclmn@gmail.com>
+Last-Updated: 2010-11-17
+--- a/Makefile
++++ b/Makefile
+@@ -175,7 +175,7 @@
+ # want this rule first, use := on ALL, and ALL not filled in yet
+ all: do_all
+ 
+--include */module.mk
++-include proc/module.mk ps/module.mk
+ 
+ do_all:    $(ALL)
+ 

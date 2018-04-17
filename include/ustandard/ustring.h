@@ -22,37 +22,66 @@ char* ustrcat_format(char* dest, size_t size_dest, const char* fmt, ...);
 
 
 
-extern char    kchars_blank[];
-extern size_t  kn_chars_blank;
-extern char    kchars_crlf[];
-extern size_t  kn_chars_crlf;
+extern const char kchars_blank[];
+extern const char kchars_crlf[];
 
-#define UST_CHARS_BLANK         kchars_blank
-#define UST_N_CHARS_BLANK       kn_chars_blank
-#define UST_CHARS_CRLF          kchars_crlf
-#define UST_N_CHARS_CRLF        kn_chars_crlf
 
 char* ustrtrim_chars(char* s, bool trim_left, bool trim_rignt, 
-        const char* chars, size_t n);
+        const char* chars);
 
 char* ustrtrim(char* s);
 
+/*
+    as a input/output parameter, use um_free(str->s) to free the alloced memory. 
+ */
+struct ustr {
+    char* s;
+    size_t len;
+    size_t capacity;
+};
+typedef struct ustr ustr_t;
 
 
+/*
+    1. const string. (with '\0').
+    2. sub string of a c string. without '\0'.  
+    do not need to free s. 
+ */
+struct ustrc {
+    const char* cs;
+    size_t      len;
+};
+typedef struct ustrc ustrc_t;
 
 
-
-int ustrsplit(const char* src, const char* split, 
-        int n, char* dest[], size_t size_dest[]);
-
-struct ustrsub {
-    const char* s;
+/*
+    writable string with valid capacity size. 
+ */
+struct ustrw {
+    char*       wrs;
     size_t      size;
 };
+typedef struct ustrw ustrw_t;
 
 
-int ustrsplit_sub(const char* src, const char* split, 
-        int n, struct ustrsub subs[]);
+
+
+
+
+
+
+
+
+
+
+
+#define USTRSPLIT_INCLUDE_0LENGTH    1<<0
+#define USTRSPLIT_INCLUDE_SPLIT      1<<1
+
+
+long ustrsplit(const char* src, const char* split, int opt, 
+        long n, ustrw_t strws[]);
+
 
 
 int ustrsplit2(const char* src, const char* split, 
@@ -88,19 +117,48 @@ long ustr_find(const char* s,
         long nmax);
 
 
+char* ustrchrs(char* s, char* chs);
+
+
+/* return the range in haystack, from needle_start, to needle_end.(include start, end).  */
+struct urange ustr_range(const char *haystack, 
+        const char *needle_start, const char* needle_end);
+
+
+long ustr_ranges(const char *haystack, 
+        const char *needle_start, const char* needle_end,
+        struct urange ranges[], long n);
+
+
+/* use um_free(p) to free the return str->s. */
+int ustr_replace_ranges(const char* s, 
+        const char* to, 
+        int nranges, 
+        struct urange* ranges, 
+    	ustr_t* str);
+
+
 /* use um_free(p) to free the return dest value. */
 int ustr_replaces(const char* s, 
         const char* needle, const char* to, 
-    	void** ppdest, size_t* len_dest);
+    	ustr_t* str);
+
+
+int ustr_replaces_reuse(char* s, size_t size, const char* needle, const char* to);
+
+
+struct ustr_replace_member {
+    struct urange range;
+    const char* to;
+    size_t to_size;
+};
 
 
 
-
-
-
-
-
-
+int ustr_replace_members(const char* s, 
+        int nmember, 
+        struct ustr_replace_member members[], 
+    	ustr_t* str);
 
 
 

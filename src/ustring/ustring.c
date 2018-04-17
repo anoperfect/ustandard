@@ -51,14 +51,6 @@ char *ustrcpy(char *dest, size_t size_dest, const char *src)
 
 
 
-
-
-
-
-
-
-
-
 /*strdup.*/
 /* return value should use um_free(p) to free, not free(p). */
 char* ustrndup(const char* src, size_t n)
@@ -133,6 +125,7 @@ char* ustrncat(char* dest, size_t size_dest, const char* src, size_t n)
 
 char* ustrcat_format(char* dest, size_t size_dest, const char* fmt, ...)
 {
+    uslog_check_arg(dest, dest);
     char* retp = dest;
 
     char tmp[1024];
@@ -158,21 +151,25 @@ char* ustrcat_format(char* dest, size_t size_dest, const char* fmt, ...)
         n = vsnprintf(p, size, fmt, ap);
         va_end(ap);
         /* If that worked, return the string. */
-        if (n > -1 && n < size)
-            return p;
+        if (n > -1 && n < size) {
+            break;
+        }
+
         /* Else try again with more space. */
         if (n > -1)    /* glibc 2.1 */
             size = n+1; /* precisely what is needed */
         else           /* glibc 2.0 */
             size *= 2;  /* twice the old size */
         if ((np = um_realloc (p, size)) == NULL) {
-            um_free(p);
             break;
         } 
         else {
             p = np;
         }
     }
+
+    ustrcat(dest, size_dest, p);
+    um_free(p);
 
     return retp;
 }
@@ -209,15 +206,11 @@ char* ustrcat_format(char* dest, size_t size_dest, const char* fmt, ...)
 
 
 
-char    kchars_blank[] = {' ', '\t'};
-size_t  kn_chars_blank = 2;
+const char kchars_blank[] = " \t";
+const char kchars_crlf[] = "\r\n";
 
 
-char    kchars_crlf[] = {'\r', '\n'};
-size_t  kn_chars_crlf = 2;
-
-
-bool uchars_include_char(const char s[], size_t n, char ch)
+static bool uchars_include_char(const char s[], size_t n, char ch)
 {
     int ret = false;
     errno = 0;
@@ -237,10 +230,11 @@ bool uchars_include_char(const char s[], size_t n, char ch)
 
 /*strtrim.*/
 char* ustrtrim_chars(char* s, bool trim_left, bool trim_right, 
-        const char* chars, size_t n)
+        const char* chars)
 {
     uslog_check_arg(s != NULL, NULL);
 
+    size_t n = strlen(chars);
     char* rets = s;
     errno = 0;
 
@@ -292,10 +286,9 @@ char* ustrtrim(char* s)
 
     char* rets = s;
     errno = 0;
-    ustrtrim_chars(s, 1, 1, UST_CHARS_BLANK, UST_N_CHARS_BLANK);
+    ustrtrim_chars(s, 1, 1, kchars_blank);
     return rets;
 }
-
 
 
 
@@ -399,103 +392,113 @@ char* ustrtrim(char* s)
 
 
 /*string split.*/
-int ustrsplit(const char* src, const char* split, 
-        int n, char* dests[], size_t size_dests[])
+static long _ustrsplit(const char* src, const char* split, int opt, 
+        long n, struct urange* ranges, struct urange** ranges_expand)
 {
     uslog_check_arg(src != NULL,        0);
     uslog_check_arg(split != NULL,      0);
     uslog_check_arg(strlen(split) > 0,  0);
     uslog_check_arg(n > 0,              0);
-    uslog_check_arg(NULL != dests,      0);
-    uslog_check_arg(NULL != size_dests, 0);
+    uslog_check_arg(NULL != ranges,      0);
+    uslog_check_arg(NULL != ranges_expand, 0);
 
     int retn = 0;
     char* s;
     char* e;
-    s = (char*)src;
-    size_t size_src = strlen(src);
+    size_t len_src = strlen(src);
     size_t size_split = strlen(split);
+
+    long nfound = 0;
+    s = (char*)src;
+    while((*s) != '\0') {
+        e = strstr(s, split);
+        if(NULL == e) {
+            break;
+        }
+
+        if((e-s) > 0 || (opt & USTRSPLIT_INCLUDE_0LENGTH)){
+            nfound ++;
+        }
+    
+        s = e + size_split;
+    }
+
+    if(s < (src+len_src)) {
+        nfound ++;
+    }
+
+    struct urange* ranges_write = NULL;
+    long nranges_write = 0;
+    nranges_write = nranges_write;
+    if(nfound <= n) {
+        ranges_write = ranges;
+        nranges_write = n;
+    }
+    else {
+        *ranges_expand = um_malloc(sizeof(struct urange) * nfound);
+        ranges_write = *ranges_expand;
+        nranges_write = nfound;
+    }
+
+    s = (char*)src;
+    long idx = 0;
     while(retn < n && (*s) != '\0') {
         e = strstr(s, split);
         if(NULL == e) {
             break;
         }
 
-        if((e-s) > 0) {
-            if(retn < n) {
-                um_strncpy(dests[retn], size_dests[retn], s, e-s);
-                retn ++;
-            }
-            else {
-                errno = E2BIG;
-            }
+        if((e-s) > 0 || (opt & USTRSPLIT_INCLUDE_0LENGTH)){
+            ranges_write[idx].location = s - src;
+            ranges_write[idx].length = (opt & USTRSPLIT_INCLUDE_SPLIT)?(e-s+size_split):(e-s);
+            idx ++;
         }
-
+    
         s = e + size_split;
     }
 
-    if(s < (src+size_src)) {
-        if(retn < n) {
-            um_strncpy(dests[retn], size_dests[retn], s, (src+size_src+1)-s);
-            retn ++;
-        }
-        else {
-            errno = E2BIG;
-        }
+    if(s < (src+len_src)) {
+        ranges_write[idx].location = s - src;
+        ranges_write[idx].length = len_src - (s - src);
+        idx ++;
     }
 
-    return retn;
+    return nfound;
 }
 
 
-int ustrsplit_sub(const char* src, const char* split, 
-        int n, struct ustrsub subs[])
+
+
+/*string split.*/
+long ustrsplit(const char* src, const char* split, int opt, 
+        long n, ustrw_t strws[])
 {
     uslog_check_arg(src != NULL,        0);
     uslog_check_arg(split != NULL,      0);
     uslog_check_arg(strlen(split) > 0,  0);
     uslog_check_arg(n > 0,              0);
-    uslog_check_arg(NULL != subs,       0);
+    uslog_check_arg(NULL != strws,      0);
 
-    int retn = 0;
-    int num = 0;
-    char* s;
-    char* e;
-    s = (char*)src;
-    size_t size_src = strlen(src);
-    size_t size_split = strlen(split);
-    while(num < n && (*s) != '\0') {
-        e = strstr(s, split);
-        if(NULL == e) {
-            break;
-        }
+    long retn = 0;
 
-        if((e-s) > 0) {
-            if(num < n) {
-                subs[num].s = s;
-                subs[num].size = e-s;
-                num ++;
-            }
-            else {
-                errno = E2BIG;
-            }
-        }
+    struct urange ranges[1024];
+    struct urange* ranges_expand = NULL;
+    long nfound = _ustrsplit(src, split, opt, 
+        1024, ranges, &ranges_expand);
+    retn = nfound;
+    struct urange* ranges_use = ranges_expand?ranges_expand:ranges;
 
-        s = e + size_split;
+    long idx = 0;
+    for(idx=0; idx<n&&idx<nfound; idx++) {
+        um_strncpy(strws[idx].wrs, strws[idx].size, src+ranges_use[idx].location, ranges_use[idx].length);
     }
 
-    if(s < (src+size_src)) {
-        if(num < n) {
-            subs[num].s = s;
-            subs[num].size = (src+size_src+1)-s;
-            num ++;
-        }
-        else {
-            errno = E2BIG;
-        }
+    if(ranges_expand) {
+        um_free(ranges_expand);
+        ranges_expand = NULL;
     }
 
-    retn = num;
+    retn = nfound;
     return retn;
 }
 
@@ -752,29 +755,6 @@ char* ustrcut_char_last(char* output, char ch)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
     return : found ranges. 
             -1: input value invalid. 
@@ -819,12 +799,252 @@ long ustr_find(const char* s,
 }
 
 
-/* use um_free(p) to free the return dest value. */
-int ustr_replaces(const char* s, 
-        const char* needle, const char* to, 
-    	void** ppdest, size_t* len_dest)
+char* ustrchrs(char* s, char* chs)
+{
+    uslog_check_arg(s != NULL, NULL);
+    uslog_check_arg(chs != NULL, NULL);
+
+    char* t = s;
+    int len = strlen(chs);
+    while(t && *t) {
+        int idx;
+        for(idx=0; idx<len; idx++) {
+            if(*t == chs[idx]) {
+                return t;
+            }
+        }
+
+        t ++;
+    }
+        
+    return NULL;
+}
+
+
+/* return the range in haystack, from needle_start, to needle_end.(include start, end).  */
+struct urange ustr_range(const char *haystack, 
+        const char *needle_start, const char* needle_end)
+{
+    struct urange range = {-1, 0};
+
+    uslog_check_arg(haystack != NULL, range);
+    uslog_check_arg(needle_start != NULL, range);
+    uslog_check_arg(needle_end != NULL, range);
+
+    const char* tmp0 = strstr(haystack, needle_start);
+    if(NULL != tmp0) {
+        const char* tmp1 = strstr(tmp0 + strlen(needle_start), needle_end);
+        if(NULL != tmp1) {
+            range.location = tmp0 - haystack;
+            range.length = tmp1 - tmp0 + strlen(needle_end);
+        }
+    }
+    
+    return range;
+}
+
+
+long ustr_ranges(const char *haystack, 
+        const char *needle_start, const char* needle_end,
+        struct urange ranges[], long n)
+{
+    uslog_check_arg(haystack != NULL        , 0);
+    uslog_check_arg(needle_start != NULL    , 0);
+    uslog_check_arg(needle_end != NULL      , 0);
+    uslog_check_arg(ranges != NULL          , 0);
+    uslog_check_arg(n > 0                   , 0);
+
+    long nret = 0;
+    long idx = 0;
+    const char* t = haystack;
+    long offset;
+    while(1) {
+        struct urange range = ustr_range(t, needle_start, needle_end);
+        offset = t - haystack;
+        if(range.location != -1 && range.length != 0) {
+            t += (range.location + range.length);
+
+            range.location += offset;
+            nret ++;
+
+            if(idx < n) {
+                ranges[idx] = range;
+                idx ++;
+            }
+        }
+        else {
+            break;
+        }
+    }
+
+    return nret;
+}
+
+
+
+
+
+
+
+
+/* use um_free(p) to free the return str->s. */
+int ustr_replace_ranges(const char* s, 
+        const char* to, 
+        int nranges, 
+        struct urange* ranges, 
+    	ustr_t* str)
 {
     int ret = 0;
+
+    str->s = NULL;
+    str->len = 0;
+    str->capacity = 0;
+
+    size_t len_s        = strlen(s);
+    size_t len_to       = strlen(to);
+    struct ucbuf bufs_replace[1];
+    bufs_replace[0].p       = to;
+    bufs_replace[0].size    = len_to;
+
+    /* '\0' need to make dest got a \0 terminal. */
+    void* dest = NULL;
+    size_t len_dest = 0;
+    ret = ubuffer_replace(s, len_s+1, 
+                &dest, &len_dest, 
+                ranges, nranges,
+                bufs_replace, 1);
+    if(0 == ret) {
+        str->s = (char*)dest;
+        str->len = len_dest-1;
+        str->capacity = len_dest;
+    }
+
+    return ret;
+}
+
+
+int ustr_replace_members(const char* s, 
+        int nmember, 
+        struct ustr_replace_member members[], 
+    	ustr_t* str)
+{
+    int ret = 0;
+
+    if(nmember <= 0) {
+        str->s = ustrdup(s);
+        if(str->s) {
+            str->len= strlen(str->s);
+            str->capacity = str->len+ 1;
+        }
+        else {
+            str->len= 0;
+            str->capacity = 0;
+        }
+
+        return ret;
+    }
+
+    long lens = strlen(s);
+    long new_length = 0;
+    int idx;
+    bool valid = true;
+    for(idx=0; idx<nmember; idx++) {
+        if(!(members[idx].range.location < lens
+            && (members[idx].range.location + members[idx].range.length) <= lens)) {
+            ulogerr("range invalid. total len: %ld. range:[%ld,%ld].\n", lens, members[idx].range.location, members[idx].range.length);
+            valid = false;
+        }
+
+        if(idx>0) {
+            if(!(members[idx].range.location >= (members[idx-1].range.location + members[idx-1].range.length))) {
+                ulogerr("range invalid. total len: %ld. range:[%ld,%ld], prev[%ld,%ld].\n", lens, 
+                        members[idx].range.location, members[idx].range.length, 
+                        members[idx-1].range.location, members[idx-1].range.length);
+                valid = false;
+                break;
+            }
+        }
+
+        if(idx == 0) {
+            new_length += members[idx].range.location;
+            new_length += members[idx].to_size;
+        }
+        else {
+            new_length += (members[idx].range.location - (members[idx-1].range.location + members[idx-1].range.length));
+            new_length += members[idx].to_size;
+        }
+
+        if(idx == (nmember-1) && lens > (members[idx].range.location + members[idx].range.length)) {
+            new_length += (lens - (members[idx].range.location + members[idx].range.length));
+        }
+    }
+
+    if(!valid) {
+        ret = -1;
+        return ret;
+    }
+
+    str->s = um_malloc(new_length+1);
+    if(!str->s) {
+        ret = -1;
+        return ret;
+    }
+
+    str->s[new_length] = '\0';
+    new_length = 0;
+    for(idx=0; idx<nmember; idx++) {
+        if(idx == 0) {
+            memcpy(str->s+new_length, s, members[idx].range.location);
+            new_length += members[idx].range.location;
+        }
+        else {
+            memcpy(str->s+new_length, s + (members[idx-1].range.location + members[idx-1].range.length), 
+                    (members[idx].range.location - (members[idx-1].range.location + members[idx-1].range.length)));
+            new_length += (members[idx].range.location - (members[idx-1].range.location + members[idx-1].range.length));
+        }
+
+        memcpy(str->s+new_length, members[idx].to, members[idx].to_size);
+        new_length += members[idx].to_size;
+
+        if(idx == (nmember-1) && lens > (members[idx].range.location + members[idx].range.length)) {
+            memcpy(str->s+new_length, s+(members[idx].range.location + members[idx].range.length), (lens - (members[idx].range.location + members[idx].range.length)));
+            new_length += (lens - (members[idx].range.location + members[idx].range.length));
+        }
+    }
+
+    str->len = strlen(str->s);
+    str->capacity = str->len + 1;
+
+    return ret;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* use um_free(p) to free the return str->s. */
+int ustr_replaces(const char* s, 
+        const char* needle, const char* to, 
+    	ustr_t* str)
+{
+    int ret = 0;
+
+    str->s = NULL;
+    str->len = 0;
+    str->capacity = 0;
 
     long nfind = 0;
     long n = 1024;
@@ -849,22 +1069,124 @@ int ustr_replaces(const char* s,
         ulogerr("find return %ld\n", nfind);
         ret = -1;
     }
+    else if(nfind == 0) {
+        str->s = ustrdup(s);
+        str->len = strlen(str->s);
+        str->capacity = str->len+1;
+    }
     else {
-        size_t len_s        = strlen(s);
-        size_t len_to       = strlen(to);
-        struct ucbuf bufs_replace[1];
-        bufs_replace[0].p       = to;
-        bufs_replace[0].size    = len_to;
+        ret = ustr_replace_ranges(s, to, nfind, ranges, str);
+    }
+    um_free_check(ranges);
 
-        /* '\0' need to make dest got a \0 terminal. */
-        ret = ubuffer_replace(s, len_s+1, 
-    		ppdest, len_dest, 
-            ranges, nfind,
-            bufs_replace, 1);
+    return ret;
+}
+
+
+/*
+    string s, move valid range to left with distance n. 
+ */
+char* ustr_move_left(char* s, struct urange range_move, long n)
+{
+    assert(s);
+
+    if(n > 0 && (long)(range_move.location) >= n) {
+        int idx;
+        for(idx=0; idx<range_move.length; idx++) {
+            s[range_move.location-n+idx] = s[range_move.location+idx];
+        }
+    }
+
+    return s;
+}
+
+
+/*
+    reuse : use previous str. 
+    alloc : return alloced string in ustr_t;
+    write : write to dest c string.
+ */
+int ustr_replaces_reuse(char* s, size_t size, const char* needle, const char* to)
+{
+    int ret = 0;
+
+    size_t len_needle = strlen(needle);
+    size_t len_to = strlen(to);
+    size_t len_s = strlen(s);
+    long len_diff = len_needle - len_to;
+
+    if(len_needle == len_to) {
+        char* t = s;
+        while(1) {
+            char* tmp = strstr(t, needle);
+            if(!tmp) {
+                break;
+            }
+
+            memcpy(tmp, to, len_to);
+
+            t = tmp + len_to;
+        }
+    }
+    else if(len_needle > len_to) {
+        int nfound = 0;
+        struct urange range = {0, 0};
+        struct urange range_move = {0, 0};
+        char* tread = s;
+        while(1) {
+            char* tmp = strstr(tread, needle);
+            if(!tmp) {
+                break;
+            }
+
+            nfound ++;
+
+            if(nfound == 1) {
+                range.location = tmp - s;
+                range.length = len_needle;
+                memcpy(tmp, to, len_to);
+            }
+            else {
+                range_move.location = range.location + range.length;
+                range_move.length = tmp - s - (range.location + range.length);
+                ustr_move_left(s, range_move, (nfound-1)*len_diff);
+
+                memcpy(tmp-(nfound-1)*len_diff, to, len_to);
+                range.location = tmp - s;
+                range.length = len_needle;
+            }
+
+            tread = tmp + len_needle;
+        }
+
+        if(nfound > 0) {
+            if(len_s > (range.location + range.length)) {
+                range_move.location = range.location + range.length;
+                range_move.length = len_s - (range.location + range.length);
+                ustr_move_left(s, range_move, nfound*len_diff);
+            }
+        }
+
+        s[len_s - nfound*len_diff] = '\0';
+    }
+    else {
+        ustr_t str;
+        ret = ustr_replaces(s, needle, to, &str);
+        if(0 == ret) {
+            ustrcpy(s, size, str.s);
+            um_free(str.s);
+        }
     }
 
     return ret;
 }
+
+
+
+
+
+
+
 
 
 int _urange_add_to_array(struct urange** pprange, long* pnum, long* ptotal, struct urange* range_add)
@@ -1001,6 +1323,8 @@ struct urange* urange_left(size_t size, struct urange* ranges, long n, long* nle
 
 
 
+
+
 /********************************************
 ustring/ustrcpy
 ustring/ustrdup
@@ -1008,3 +1332,718 @@ ustring/ustrtrim
 ustring/ustrsplit
 
   *******************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ifdef TEST_USTR_REPLACES_REUSE
+int test_ustr_replaces_reuse(void)
+{
+    int ret = 0;
+    char* s = "0123abc456abcabcab789abcab";
+    uloginf("s : [%s]\n", s);
+
+    const char* needle;
+    const char* to;
+    char s0[1024];
+    const char* s0_expected;
+
+    /* found 0. */
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "abcd";
+    to = "xxx";
+    s0_expected = "0123abc456abcabcab789abcab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    /* found 1 - left. */
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "0123";
+    to = "xxx";
+    s0_expected = "xxxabc456abcabcab789abcab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "0123";
+    to = "xyzo";
+    s0_expected = "xyzoabc456abcabcab789abcab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "0123";
+    to = "xyzoplkjhgfdsa";
+    s0_expected = "xyzoplkjhgfdsaabc456abcabcab789abcab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    /* found 1 - middle. */
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "456";
+    to = "xxx";
+    s0_expected = "0123abcxxxabcabcab789abcab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "456";
+    to = "xy";
+    s0_expected = "0123abcxyabcabcab789abcab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "456";
+    to = "xyzoplkjhgfdsa";
+    s0_expected = "0123abcxyzoplkjhgfdsaabcabcab789abcab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    /* found 1 - right. */
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "9abcab";
+    to = "123456";
+    s0_expected = "0123abc456abcabcab78123456";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "9abcab";
+    to = "xy";
+    s0_expected = "0123abc456abcabcab78xy1";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "9abcab";
+    to = "9xyzoplkjhgfdsa";
+    s0_expected = "0123abc456abcabcab789xyzoplkjhgfdsa";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+
+    /* found n. */
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "abc";
+    to = "xxx";
+    s0_expected = "0123xxx456xxxxxxab789xxxab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    assert(0 == strcmp(s0, s0_expected));
+    
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "abc";
+    to = "xy";
+    s0_expected = "0123xy456xyxyab789xyab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    uloginf("s0 then : [%s]\n", s0);
+    assert(0 == strcmp(s0, s0_expected));
+
+    memset(s0, 'u', 1024);
+    strcpy(s0, s);
+    needle = "abc";
+    to = "";
+    s0_expected = "0123456ab789ab";
+    ustr_replaces_reuse(s0, 1024, needle, to);
+    uloginf("s0 then : [%s]\n", s0);
+    assert(0 == strcmp(s0, s0_expected));
+
+    return ret;
+}
+
+
+
+#endif
+
+
+
+
+#ifdef TEST_SPLIT 
+void test_split()
+{
+    const char* s = "a12aa456a7890";
+
+#define NUM 100
+#define LEN 1024
+    char output[NUM][LEN];
+    ustrw_t strs[NUM];
+
+    int idx;
+    for(idx=0; idx<NUM; idx++) {
+        strs[idx].wrs = output[idx];
+        strs[idx].size = LEN;
+    }
+    
+    long n = NUM;
+    //int opt = 0;
+    //int opt = USTRSPLIT_INCLUDE_0LENGTH;
+    //int opt = USTRSPLIT_INCLUDE_SPLIT;
+    int opt = USTRSPLIT_INCLUDE_0LENGTH | USTRSPLIT_INCLUDE_SPLIT;
+    int nfound = ustrsplit(s, "a", opt, 
+            n, strs);
+
+    for(idx=0; idx<nfound; idx++) {
+        uloginf("%d : [%s]\n", idx, output[idx]);
+    }
+}
+
+
+#endif
