@@ -1,0 +1,41 @@
+new XMLHttpRequest();
+		}else if (typeof ActiveXObject != "undefined"){
+			if (typeof arguments.callee.activeXString != "string"){
+				var versions = ["MSXML2.XMLHttp.6.0","MSXML2.XMLHttp.3.0","MSXML2.XMLHttp"],
+					i,len;
+
+				for(i=0,len=versions.length;i<len;i++){
+					try{
+						new ActiveXObject(versions[i]);
+						arguments.callee.activeXString = versions[i];
+						break;
+					}catch(ex){
+
+					}
+				}
+			}
+			return new ActiveXObject(arguments.callee.activeXString);
+		}else{
+			throw new Error("NO XHR object available.");
+		}
+	}
+
+	//获取腾讯网域名的访问vip信息,填充urlList对象
+	function getUrlVip(str_key,str_host,str_url){
+
+		//tipsInfo.text("尝试获取主机 "+str_host+"的访问IP信息。");
+		baseInfo.tips = "尝试获取主机 "+str_host+"的访问IP信息。";
+
+		var xhr = createXHR();
+		var oTime = {"id":"","host":"","url":"","rip":"","vip":"",
+			"time_total":"","time_start":"","time_open":"","time_send":"","time_recv":"",
+			"status":"","statusText":"","header":"","body":"","len":0,"type":"","ok":false};
+
+
+		var dateStart = new Date().getTime(),dateOpen,dateSend,dateRecv,dateEnd;
+		xhr.onreadystatechange = function(){
+			//if(xhr.readState == 0){
+				//alert("尚未初始化");
+				//dateStart = new Date().getTime();
+			//}
+			if(xhr.readyState =

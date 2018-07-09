@@ -24,6 +24,8 @@ struct uslog_data;
 
 
 
+int uslog_set_config_filename(const char* name);
+
 /* it's better to call it in the beginning of the process. */
 struct uslog_data* uslog_init(void);
 
@@ -128,6 +130,7 @@ extern __thread char* tp_function[1024];
     return retvalqwe;}while(0)
 
 #define RETURN_TYPE_END__
+
 
 
 

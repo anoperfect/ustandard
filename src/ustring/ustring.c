@@ -47,6 +47,9 @@ char *ustrcpy(char *dest, size_t size_dest, const char *src)
 
 
 
+__thread char*  __ustrdup_str;
+__thread size_t __ustrdup_size_n;
+__thread size_t __ustrdup_len;
 
 
 

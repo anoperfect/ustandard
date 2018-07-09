@@ -1,0 +1,123 @@
+v.cid){
+				getIpLocInfo(k);
+			}
+		})
+
+		$.each(hostList,function(k,v){
+			if(v && v.rip && !hostList[k].gslb){
+				getGslbInfo(k,ipList[v.rip].cid,ipList[v.rip].pid,ipList[v.rip].iid);
+			}
+		})
+
+		$.each(info,function(k,v){
+			var vv = eval(v);
+			if(vv.text() && ipList[vv.text()]){
+				vv.next().text(ipList[vv.text()]["isp"]);
+				vv.next().next().text(ipList[vv.text()]["loc"]);
+			}
+		})
+
+		if(hostList[location.hostname].gslb){
+			td_gslb.text(hostList[location.hostname].gslb);
+		}
+
+		if(host.length >1){
+			if(urlList[host+"_urlcheck"] && urlList[host+"_urlcheck"].rip){
+				td_url_cip.text(urlList[host+"_urlcheck"].rip);
+				hostList[host]["rip"] = urlList[host+"_urlcheck"].rip;
+			}
+			if(urlList[host+"_urlcheck"] && urlList[host+"_urlcheck"].vip){
+				td_url_vip.text(urlList[host+"_urlcheck"].vip);
+				hostList[host]["vip"] = urlList[host+"_urlcheck"].vip;
+			}
+
+			if(urlList[host+"_urlcheck"] && urlList[host+"_urlcheck"].status){
+				td_status.text(urlList[host+"_urlcheck"].status + " " +urlList[host+"_urlcheck"].statusText);
+				td_size.text(urlList[host+"_urlcheck"].len + " bytes");
+				td_url_ttl.text(urlList[host+"_urlcheck"].time_total + " ms");
+			}
+
+			if(hostList[host].gslb)
+				td_url_ip.text(hostList[host].gslb);
+
+			if(isMobile){
+				if(flag=="kb"||flag=="inews"||flag=="news"||flag=="sports"||flag=="qnreading"){
+
+					$.get("/getlogkey/"+flag).then(function(data){
+						td_app.html("请点击提交！ <a href="+data+">"+data.replace(/.*key=([^&]+).*/ig,"$1")+"</a>");
+					})
+					td_app.parent().show();
+					menu_app.show();
+				}
+			}
+		}
+
+
+		if(td_proxy.text() != "NULL")td_proxy.parent().show();
+
+		if(!isComplete){
+			isComplete = true;
+
+			if(hostList[location.hostname].rip && ipList[hostList[location.hostname].rip].isp && baseInfo.ldns && ipList[baseInfo.ldns].isp){
+				status_ip.hide();
+			}else{
+				baseInfo.tips = "诊断中，IP相关信息尚未获取完毕。";
+				isComplete = false;
+				if(failedCnt > 20){
+					status_ip.hide();
+					isComplete = true;
+				}
+			}
+			if(hostList[location.hostname].vip && ipList[hostList[location.hostname].vip].isp && hostList[location.hostname].gslb){
+				status_zmn.hide();
+			}else{
+				baseInfo.tips = "诊断中，啄木鸟相关信息尚未获取完毕。";
+				isComplete = false;
+			}
+
+			if(host.length > 1){
+				if(urlList[host+"_urlcheck"].ok){
+					status_url.hide();
+
+					if(urlList[host+"_urlcheck"].rip)td_url_cip.parent().show();
+					if(urlList[host+"_urlcheck"].vip)td_url_vip.parent().show();
+
+					if(!urlList[host+"_urlcheck"].rip && td_rip.text() && ipList[td_rip.text()] &&ipList[td_rip.text()].pid){
+						getGslbInfo(host, ipList[td_rip.text()].cid, ipList[td_rip.text()].pid, ipList[td_rip.text()].iid);
+					}
+
+					if(host == "www.qq.com" || hostList[host].gslb && hostList[host].gslb.indexOf("www.qq.com") > -1 ){
+						urlList[host+"_urlcheck"].rip = td_rip.text();
+						urlList[host+"_urlcheck"].vip = td_vip.text();
+					}
+				}else{
+					baseInfo.tips = "诊断中，URL检测信息尚未获取完毕。";
+					isComplete = false;
+				}
+			}
+		}else{
+			baseInfo.tips = "诊断中，请稍候分享，当前正在上传诊断结果。";
+
+			status_ip.hide();
+			status_url.hide();
+			status_zmn.hide();
+
+			if(td_gslb.text().indexOf(td_vip.text()) > -1)
+				td_gslb.html(hostList[location.hostname].gslb.replace(td_vip.text(),
+					"<font color='red'>"+td_vip.text()+"</font>"));
+
+			if(host.length > 1 && td_url_ip.text().indexOf(td_url_vip.text()) >-1)
+				td_url_ip.html(hostList[host].gslb.replace(td_url_vip.text(),
+					"<font color='red'>"+td_url_vip.text()+"</font>"));
+
+			setTimeout(function(){clearInterval(showCnt);},1000);
+		}
+	},500)
+
+
+	//上传数据
+	var postCnt = setInterval(postData,5000);
+	function postData(){
+
+		var pd = {"local_time":"","flagId":baseInfo.flagId,"id":0,"class":"",
+				  "ywid":0,"yewu":"","host":baseInfo.host,"ldns":baseInfo.

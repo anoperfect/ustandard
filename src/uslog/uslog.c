@@ -124,7 +124,7 @@ int _uslog_config_read(struct uslog_data* logctx, const char* name)
 
     FILE* fp = fopen(name, "r");
     if(!fp) {
-        printf("no nslog config file.\n");
+        //printf("no nslog config file.\n");
         return ret;
     }
 
@@ -181,6 +181,26 @@ int _uslog_config_read(struct uslog_data* logctx, const char* name)
 }
 
 
+static char* kconfig_file = NULL;
+
+int uslog_set_config_filename(const char* name)
+{
+    int ret = 0;
+
+    if(name) {
+        kconfig_file = malloc(strlen(name) + 1);
+        if(kconfig_file) {
+            strcpy(kconfig_file, name);
+        }
+    }
+    else {
+        fprintf(stderr, "uslog config file : (%s) not existed.\n", name);
+    }
+
+    return ret;
+}
+
+
 int _uslog_config_init(struct uslog_data* logctx)
 {
     int ret = 0;
@@ -217,7 +237,10 @@ int _uslog_config_init(struct uslog_data* logctx)
         logctx->configs[__ve].prefix = " error: ";
     }
 
-    _uslog_config_read(logctx, "/etc/uslog.conf");
+    if(!kconfig_file) {
+        kconfig_file = "/etc/uslog.conf";
+    }
+    _uslog_config_read(logctx, kconfig_file);
 
     return ret;
 }

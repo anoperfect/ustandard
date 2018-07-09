@@ -50,10 +50,17 @@ int usocket_create_tcp_server(int port, int backlog)
 }
 
 
+#include <netdb.h>
 int usocket_connect_to_tcp_server(const char* servername, int port)
 {
     int clientfd;
     struct sockaddr_in servaddr;
+
+    struct hostent* host = gethostbyname(servername);
+    if(NULL == host) {
+        ulogerr("gethostbyname (%s) error: %s(errno: %d)\n", servername, strerror(errno),errno);
+        return -1;
+    }
 
     clientfd = socket(AF_INET, SOCK_STREAM, 0);
     if(clientfd < 0) {
@@ -61,6 +68,12 @@ int usocket_connect_to_tcp_server(const char* servername, int port)
         return clientfd;
     }
 
+    bzero(&servaddr,sizeof(servaddr)); 
+    servaddr.sin_family=AF_INET; 
+    servaddr.sin_port=htons(port); 
+    servaddr.sin_addr=*((struct in_addr *)host->h_addr); 
+
+#if 0
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(port);
@@ -70,6 +83,7 @@ int usocket_connect_to_tcp_server(const char* servername, int port)
         clientfd = -1;
         return clientfd;
     }
+#endif
 
     if( connect(clientfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0){
         ulogerr("connect error: %s(errno: %d)\n",strerror(errno),errno);

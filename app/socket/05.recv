@@ -1,0 +1,49 @@
+/http:\/\/[^\/]+\/+/,""));
+//var href = GetQueryString('testurl');
+var host=escapeHtml(location.pathname.replace(/https?:\/\/+/,"").split("/")[1]);
+
+$("#img").attr("src","http://"+snghost+"/s?r="+rand).hide();
+
+$("#feedback_btn").click(function(){
+	window.open('http://support.qq.com/products/4216');
+})
+
+//console.log("http://"+snghost+"/s?r="+rand);
+	
+var flag="www";
+var baseInfo = {},hostList = {},ipList = {},urlList = {},
+	connectData = [{"www.qq.com":{"time":-1,"cnt":"0","type":"www"},"v.qq.com":{"time":-1,"cnt":"0","type":"v"},"inews.qq.com":{"time":-1,"cnt":"0","type":"news"},"fw.qq.com":{"time":-1,"cnt":"0","type":"www"},"mini2015.qq.com":{"time":-1,"cnt":"0","type":"www"},"img1.gtimg.com":{"time":-1,"cnt":"0","type":"www"},"mat1.gtimg.com":{"time":-1,"cnt":"0","type":"www"},"img.gtimg.cn":{"time":-1,"cnt":"0","type":"v"},"i.gtimg.cn":{"time":-1,"cnt":"0","type":"v"},"ra.gtimg.com":{"time":-1,"cnt":"0","type":"v"},"imgcache.qq.com":{"time":-1,"cnt":"0","type":"v"},"inews.gtimg.com":{"time":-1,"cnt":"0","type":"news"},"r.inews.qq.com":{"time":-1,"cnt":"0","type":"news"},"view.inews.qq.com":{"time":-1,"cnt":"0","type":"news"},"kuaibao.qq.com":{"time":-1,"cnt":"0","type":"qnreading"},"puui.qpic.cn":{"time":-1,"cnt":"0","type":"v"},"ugc.qpic.cn":{"time":-1,"cnt":"0","type":"v"},"imgcache.gtimg.cn":{"time":-1,"cnt":"0","type":"v"},"vpic.video.qq.com":{"time":-1,"cnt":"0","type":"v"},"qzs.qq.com":{"time":-1,"cnt":"0","type":"v"},"aoma.qq.com":{"time":-1,"cnt":"0","type":"v"},"ioma.qq.com":{"time":-1,"cnt":"0","type":"v"}},{"static.iqiyi.com":{"time":-1,"cnt":"0","type":"all"},"toutiao.com":{"time":-1,"cnt":"0","type":"all"},"www.baidu.com":{"time":-1,"cnt":"0","type":"all"},"www.sina.com.cn":{"time":-1,"cnt":"0","type":"all"},"www.taobao.com":{"time":-1,"cnt":"0","type":"all"}}];
+
+for(var idx=0;idx<3;idx++){
+	if(connectData[idx])
+		if(connectData[idx][host]){
+			flag=connectData[idx][host].type;
+			break;
+		}
+}
+
+var failedCnt = 0,flagLdns = false, isComplete = false,isUpdate = 0,pd_old;
+
+var td_rip = $("#rip"),
+	td_vip = $("#vip"),
+	td_proxy = $("#proxy"),
+	td_ldns = $("#ldns"),
+	td_gslb = $("#gslb"),
+	td_url = $("#url"),
+	td_status = $("#status"),
+	td_size = $("#size"),
+	td_url_ttl = $("#url_ttl"),
+	td_url_cip = $("#url_cip"),
+	td_url_vip = $("#url_vip"),
+	td_url_ip = $("#url_ip"),
+	td_app = $("#applog"),
+	menu_app = $("#app_log"),
+	tr_proxy = $("#tr_proxy"),
+	btn_share = $("#share"),
+	body = $("body");
+
+var status_ip = $("#status_ip"),
+	status_stat = $("#status_stat"),
+	status_url = $("#status_url"),
+	status_zmn = $("#status_zmn"),
+	status_shebei = $("

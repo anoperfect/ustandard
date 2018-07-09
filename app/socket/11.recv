@@ -1,0 +1,68 @@
+ºÅ");
+	}
+}
+
+
+function createTable(tbid,idx,css){
+	var row;
+	var cell;
+
+	for(d in connectData[idx]){
+		//if(connectData[idx][d].type != "all"&&connectData[idx][d].type!=flag)continue;
+
+		if(d){
+			row=document.createElement("tr");
+			row.setAttribute("class","body"+css);
+			document.getElementById(tbid).appendChild(row);
+			cell=document.createElement("td");
+			cell.innerText=d;
+			cell.setAttribute("width","16%");
+			row.appendChild(cell);
+
+			cell=document.createElement("td");
+			cell.innerText="NULL";
+			cell.setAttribute("id",d+"_"+idx);
+			row.appendChild(cell);
+		}
+	}
+}
+
+
+
+function escapeHtml(string) {
+	var entityMap = {
+ 		"&": "&amp;",
+		"<": "&lt;",
+		">": "&gt;",
+		'"': '&quot;',
+		"'": '&#39;'
+		//"/": '&#x2F;'
+	};
+	//return String(string).replace(/[&<>"'\/]/g, function (s) {
+	return String(string).replace(/[&<>"']/g, function (s) {
+		return entityMap[s];
+	});
+}
+
+var loading = 0;
+
+var timer = setInterval(func,500);
+
+function func(){
+	if(g_process >= 100) g_process = 100;
+	$('#p1').attr('aria-valuenow',loading);
+	$('#progress .progress_bar').animate({'width':g_process+'%'});
+	//console.log(g_process+"%");
+	//loading ++;
+	//if(loading == 101) clearInterval(timer);
+}
+
+</script>
+
+<!--script type="text/javascript" src="http://mat1.gtimg.com/libs/zepto/1.1.6/zepto.js"></script>
+<script type="text/javascript" src="http://qzs.qq.com/tencentwap/script/share_api.js"></script-->
+
+</html>
+
+0
+

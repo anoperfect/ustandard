@@ -1,0 +1,36 @@
+debug"></div>
+</div>
+
+<!-- 尾部 -->
+<div class="site_footer">
+	<div class="module_inner">
+		<div class="">
+			<div class="copyrighten">Copyright © 1998 - <span><script>document.write(new Date().getFullYear());</script></span> Tencent. <a target="_blank" href="http://www.tencent.com/en-us/le/copyrightstatement.shtml" rel="nofollow">All Rights Reserved.</a></div>
+			<div class="copyrightzh">Designed by OMG 运维技术中心<br>腾讯出品</div>
+		</div>
+	</div>
+</div>
+
+<!--div id="result">检测结果如下：</div>
+<div id="tips"></div>
+<br>
+<div id="client"></div>
+<div id="contact">如需更多<a href="/help.htm">帮助</a>，可通过<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=9348456&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:9348456:51" alt="我要报障" title="我要报障"/></a>和我们联系。</div-->
+
+
+</body>
+
+<script type="text/javascript" >
+
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
+
+var rand=Math.floor(Math.random()*1000+1);
+var flag_id=new Date().getTime()+"."+("000"+rand).substr(-3);
+var snghost=flag_id+".sngdia.imtmp.net";
+
+var href=escapeHtml(location.href.replace(

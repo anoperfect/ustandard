@@ -58,3 +58,13 @@ double uaverage_double_add(struct uaverage_double* avr, double d)
     ret = sum / (avr->num-2*ncut);
     return ret;
 }
+
+
+int uaverage_double_clear(struct uaverage_double* avr)
+{
+    int ret = 0;
+
+    avr->num  = 0;
+
+    return ret;
+} 

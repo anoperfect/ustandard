@@ -1,0 +1,89 @@
+= 1){
+				//alert("已经调用open方法，但未调用send方法");
+				oTime.time_start = new Date().getTime() - dateStart;
+			}
+			if(xhr.readyState == 2){
+				//alert("已经调用send方法，但未接收到响应");
+				oTime.time_open = new Date().getTime() - dateStart - oTime.time_start;
+			}
+			if(xhr.readyState == 3){
+				//alert("已经收到头部及部分数据");
+				oTime.time_send = new Date().getTime() - dateStart - oTime.time_start - oTime.time_open;
+			}
+			if(xhr.readyState == 4){
+			    //响应数据全部收完
+				oTime.time_total = new Date().getTime() - dateStart;
+				oTime.time_recv = oTime.time_total - oTime.time_start - oTime.time_open - oTime.time_send;
+
+				oTime.id = str_key;
+				oTime.iid = baseInfo.id;
+				oTime.host = str_host;
+				oTime.url = str_url;
+
+				oTime.status = xhr.status;
+				oTime.statusText = xhr.statusText;
+
+				oTime.header = xhr.getAllResponseHeaders().toLowerCase();
+
+				oTime.len = xhr.responseText.length;
+				if(oTime.len >= 200){
+					oTime.body = escapeHtml(xhr.responseText.substring(0,200) + "  ... ");
+				}else{
+					oTime.body = escapeHtml(xhr.responseText);
+				}
+
+				if(xhr.statusText == "error")
+					oTime.statustext = "";
+
+				if(xhr.status == 0 )
+					oTime.status = "不支持或劫持！";
+
+				if(oTime.header.indexOf("x-client-ip") > -1)
+				{
+					oTime.rip = xhr.getResponseHeader("X-Client-Ip");
+					//hostList[str_host]["rip"] = oTime.rip;
+					ipList[oTime.rip] = {};
+				}
+				if(oTime.header.indexOf("x-server-ip") > -1){
+					oTime.vip = xhr.getResponseHeader("X-Server-Ip");
+					//hostList[str_host]["vip"] = oTime.vip;
+					ipList[oTime.vip] = {};
+
+				}
+				if(oTime.header.indexOf("content-type") > -1)
+					oTime.type = xhr.getResponseHeader("Content-Type");
+
+				oTime.ok = true;
+
+				if(!urlList[str_host+"_"+str_key])
+					urlList[str_host+"_"+str_key] = oTime;
+
+				g_process += 20; //@腾讯网测试结果信息 加载完毕
+				console.log("@腾讯网测试结果信息 加载完毕+20");
+
+			}
+		}
+		xhr.open("get",str_url,true);
+		xhr.send(null);
+
+		if(!oTime.rip)
+			getIPbyuhtm(str_host);
+	}
+
+
+ 	var info = ["td_rip","td_vip","td_ldns","td_proxy","td_url_cip","td_url_vip"];
+
+	//监控程序并显示
+	var showCnt = setInterval(function(){
+
+		tipsInfo.text(baseInfo.tips);
+
+		td_rip.text(hostList[location.hostname].rip);
+		td_vip.text(hostList[location.hostname].vip);
+		td_proxy.text(hostList[location.hostname].proxy);
+		baseInfo.rip = td_rip.text();
+		baseInfo.rip_isp = td_rip.next().text();
+		baseInfo.rip_loc = td_rip.next().next().text();
+
+		$.each(ipList,function(k,v){
+			if(!

@@ -6,6 +6,42 @@ __BEGIN_DECLS
 char *ustrncpy(char *dest, size_t size_dest, const char *src, size_t n);
 char *ustrcpy(char *dest, size_t size_dest, const char *src);
 
+
+
+
+extern __thread char*  __ustrdup_str;
+extern __thread size_t __ustrdup_size_n;
+extern __thread size_t __ustrdup_len;
+
+
+
+#define um_strndup(src, n) (\
+        src?(\
+        __ustrdup_len = strlen(src), \
+        __ustrdup_size_n = n<=__ustrdup_len?n:__ustrdup_len, \
+        __ustrdup_str = um_malloc(__ustrdup_size_n+1),\
+        __ustrdup_str?(\
+        strncpy(__ustrdup_str, src, __ustrdup_size_n),\
+        __ustrdup_str[__ustrdup_size_n] = '\0' \
+        ):0,\
+        __ustrdup_str\
+        ):NULL\
+)
+
+
+#define um_strdup(src) (\
+        src?(\
+        __ustrdup_len = strlen(src), \
+        __ustrdup_str = um_malloc(__ustrdup_len+1),\
+        __ustrdup_str?(\
+        strcpy(__ustrdup_str, src)\
+        ):0,\
+        __ustrdup_str\
+        ):NULL\
+)
+
+
+
 /* return value should use um_free(p) to free, not free(p). */
 char* ustrndup(const char* src, size_t n);
 

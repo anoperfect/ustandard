@@ -1,0 +1,113 @@
+language="Javascript1.7">JS_VERSION = 1.7;</script>
+<script language="Javascript1.8">JS_VERSION = 1.8;</script>
+<script language="Javascript1.9">JS_VERSION = 1.9;</script>
+<style>
+body{background:#fff;}
+</style>
+</head>
+<body>
+<div id='progress'>
+	<div class='progress_bar'></div>
+	<img id="img">
+</div>
+<!--div class="page_head">
+	<div class="head_inner">
+		<div class="head_left">
+			<img id="img">
+			<span><h2>啄木鸟诊断</h2></span>
+		</div>
+		<div class="nav">     
+			<ul class="sy1_ul">
+				<--li class="sy1_li"> 
+					<a class="sy1_tit " href="#" target="_self">页面</a>
+					<div class="sy2_ul">
+						<ul class="sy2_inside">
+							<li class="sy2_li"> <a class="sy2_tit" href="http://www.bz.qq.com" target="blank">www.bz.qq.com腾讯网</a></li>
+							<li class="sy2_li"> <a class="sy2_tit" href="http://games.bz.qq.com" target="blank">games.bz.qq.com 腾讯游戏</a> </li>
+							<li class="sy2_li"> <a class="sy2_tit" href="http://fw.bz.qq.com" target="blank">fw.bz.qq.com IP解析</a> </li>
+							<li class="sy2_li"> <a class="sy2_tit" href="http://mini.bz.qq.com" target="blank">mini.bz.qq.com 迷你AIO</a> </li>
+						</ul>
+						<ul class="sy2_inside">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://v.bz.qq.com" target="blank">v.bz.qq.com 视频WEB端</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://m.bz.qq.com" target="blank">m.bz.qq.com 视频M站</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://film.bz.qq.com" target="blank">film.bz.qq.com 视频电影</a> </li>		              		
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://cache.bz.qq.com" target="blank">cache.bz.qq.com 视频PC端</a> </li>
+						</ul>
+						<ul class="sy2_inside">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://rnews.bz.qq.com" target="blank">rnews.bz.qq.com 无线新闻</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://view.bz.qq.com" target="blank">view.bz.qq.com 新闻插件</a> </li>
+		            	</ul>
+		            	<ul class="sy2_inside">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://kb.bz.qq.com" target="blank">kb.bz.qq.com 快报分享</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://cnews.bz.qq.com" target="blank">cnews.bz.qq.com 快报列表</a> </li>
+		            	</ul>
+		           	</div>
+		        </li>
+				<li class="sy1_li"> 
+					<a class="sy1_tit " href="#" target="_self">图片</a>
+					<div class="sy2_ul">
+						<ul class="sy2_inside">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://img1.bz.qq.com" target="blank">img1.bz.qq.com 腾讯网图片</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://mat1.bz.qq.com" target="blank">mat1.bz.qq.com 腾讯网素材</a> </li>
+						</ul>
+						<ul class="sy2_inside">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://pusp.bz.qq.com" target="blank">pusp.bz.qq.com 视频图片</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://puep.bz.qq.com" target="blank">puep.bz.qq.com 视频图片</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://puui.bz.qq.com" target="blank">puui.bz.qq.com 视频图片</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://vv.bz.qq.com" target="blank">vv.bz.qq.com 视频图片</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://vpic.bz.qq.com" target="blank">vpic.bz.qq.com 视频图片</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="#" target="blank">vm.gtimg.cn 视频素材</a> </li>
+						</ul>
+						<ul class="sy2_inside">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://inews.bz.qq.com" target="blank">inews.gtimg.com 无线图片</a> </li>
+		            	</ul>
+		           	</div>
+		        </li>
+		        <li class="sy1_li">
+		        	<a class="sy1_tit " href="#" target="_self">工具</a>
+		        	<div class="sy2_ul">
+						<ul class="sy2_inside">
+		            		<li class="sy2_li"> <a class="sy2_tit" href="http://mini2015.qq.com/test2015/AIO_Tool.htm" target="blank">AIO测试</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://mini2015.qq.com/test2015/ipGeoTool.htm" target="blank">AIO地理定位</a> </li>
+		            	</ul>
+		            	<ul class="sy2_inside">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://v.qq.com/toolpages/h5_test.html" target="blank">视频问题诊断</a> </li>
+		              	</ul>
+		              	<ul class="sy2_inside" id="app_log">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://log.bz.qq.com/getlogkey/news/auto" target="blank">腾讯新闻APP日志上报</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://log.bz.qq.com/getlogkey/qnreading/auto" target="blank">快报APP日志上报</a> </li>
+		              		<li class="sy2_li"> <a class="sy2_tit" href="http://log.bz.qq.com/getlogkey/sports/auto" target="blank">看比赛APP日志上报</a> </li>
+		            	</ul>
+		           	</div>
+		        </li->
+		        <li class="sy1_li">
+		        	<a class="sy1_tit " href="http://app.bz.qq.com" target="blank">APP日志</a>
+		        </li>
+		        <li class="sy1_li">
+		        	<a class="sy1_tit " href="/help.htm" target="blank">帮助</a>
+		        	<--div class="sy2_ul">
+		            	<ul class="sy2_inside">
+		              		<li class="sy2_li"> <a class="sy2_tit" href="#" target="blank">Nginx跨域配置指引</a> </li>
+		            	</ul>
+		           	</div->
+		        </li>
+		        <--li class="sy1_li">
+		        	<a class="sy1_tit " href="http://bianque.webdev.com/bz/bzApply" target="blank">反馈</a>
+		        </li->
+			</ul>
+		</div>	
+	</div>
+</div-->
+
+<!--div class="search_bar">
+    <div class="search_sort">URL网址</div>
+    <div class="search_input"><input type="url" placeholder="请输入URL,部分URL可在固化地址中直接点击" id="domain"></div>
+    <a href="javascript:;" class="search_btn" onclick="startCheck()" id='check'>检测</a>
+    <a href="javascript:;" class="search_btn" onclick="share();" id='share'>分享</a>
+</div-->
+
+<div class='loading_bar'>
+	<!--div id='progress'><div class='progress_bar'></div></div-->
+	<div id='tips_info'></div>
+	<button class='btn' id='feedback_btn'>问题反馈</button>
+	<!--button c

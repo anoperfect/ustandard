@@ -27,7 +27,7 @@ struct conf_category
 
 
 #define LEN_PATH    1024
-struct conf
+struct uconfparse
 {
     char path[LEN_PATH];
     int num_conf_category;
@@ -43,9 +43,9 @@ struct conf
     -1 : ENOMEM.
 */
 int _uconf_parse_line(char* line, struct conf_item* item, char** category);
-int _uconf_add_category(CONF* conf, char* name_category);
-int _uconf_add_item(CONF* conf, struct conf_item* item);
-int _uconf_parse(CONF* conf);
+int _uconf_add_category(UCONFPARSE* conf, char* name_category);
+int _uconf_add_item(UCONFPARSE* conf, struct conf_item* item);
+int _uconf_parse(UCONFPARSE* conf);
 
 
 char* __ustrndup(const char* str, size_t n)
@@ -118,15 +118,15 @@ char* __ustrtrim_chars(char* str, char s[], size_t n)
 }
 
 
-CONF* uconf_open(const char* path, conf_mode_e mode)
+UCONFPARSE* uconf_open(const char* path, conf_mode_e mode)
 {
     int ret =0;
 
-    CONF* conf = um_malloc(sizeof(CONF));
+    UCONFPARSE* conf = um_malloc(sizeof(UCONFPARSE));
     if(NULL == conf) {
         return NULL;
     }
-    memset(conf, 0, sizeof(CONF));
+    memset(conf, 0, sizeof(UCONFPARSE));
     strncpy(conf->path, path, LEN_PATH-1);
 
     ret = _uconf_parse(conf);
@@ -187,7 +187,7 @@ finish:
 }
 
 
-int _uconf_add_category(CONF* conf, char* name_category)
+int _uconf_add_category(UCONFPARSE* conf, char* name_category)
 {
     int ret = 0;
 
@@ -204,7 +204,7 @@ int _uconf_add_category(CONF* conf, char* name_category)
 }
 
 
-int _uconf_add_item(CONF* conf, struct conf_item* item)
+int _uconf_add_item(UCONFPARSE* conf, struct conf_item* item)
 {
     int ret = 0;
 
@@ -233,7 +233,7 @@ int _uconf_add_item(CONF* conf, struct conf_item* item)
 }
 
 
-int _uconf_parse(CONF* conf)
+int _uconf_parse(UCONFPARSE* conf)
 {
     int ret = 0;
 
@@ -276,14 +276,14 @@ int _uconf_parse(CONF* conf)
 }
 
 
-int uconf_get_category_num(CONF* conf)
+int uconf_get_category_num(UCONFPARSE* conf)
 {
     int num = conf->num_conf_category;
     return num;
 }
 
 
-const char* uconf_get_category(CONF* conf, int index_category)
+const char* uconf_get_category(UCONFPARSE* conf, int index_category)
 {
     const char* name;
     if(index_category >= 0 && index_category < conf->num_conf_category) {
@@ -300,7 +300,7 @@ const char* uconf_get_category(CONF* conf, int index_category)
 /*
     Input name_category to NULL or "*" means wildcard any category.
 */
-const char* uconf_get_string(CONF* conf, const char* name_category, const char* name_item)
+const char* uconf_get_string(UCONFPARSE* conf, const char* name_category, const char* name_item)
 {
     const char* value = NULL;
 
@@ -335,7 +335,7 @@ const char* uconf_get_string(CONF* conf, const char* name_category, const char* 
 }
 
 
-int uconf_close(CONF* conf)
+int uconf_close(UCONFPARSE* conf)
 {
     int ret = 0;
 
