@@ -17,6 +17,7 @@ const char* kcmds = "create server #port(e.g. create server 8080)\n"
 #define STRING_ACCEPT           "accept"
 #define STRING_CONNECT          "connect "
 #define STRING_SEND_FILE        "sendfile "
+#define STRING_SEND_FILES       "sendfiles "
 
 struct socket_cfg {
     int eventfd;
@@ -45,6 +46,12 @@ int main(int argc, char* argv[])
 {
     setbuf(stdout, NULL);
     int ret = 0; ret = ret;
+
+
+void stringprint(void);
+stringprint();
+return 0;
+
 
     printf("%s", kcmds);
 
@@ -88,10 +95,6 @@ int main(int argc, char* argv[])
                     assert(kcfg.server_mode);
                     assert(kcfg.pipe_cmd[0] > 0 && kcfg.pipe_cmd[1] > 0);
                     write(kcfg.pipe_cmd[1], STRING_ACCEPT, strlen(STRING_ACCEPT));
-
-
-
-
                 }
                 else if(0 == strncmp(cmd, STRING_CONNECT, strlen(STRING_CONNECT))) {
                     char url[10240];
@@ -124,8 +127,26 @@ int main(int argc, char* argv[])
 
                     ssize_t nwrite = write(kcfg.clientfd, buf, size);
                     assert(nwrite == size);
-
                 }
+                else if(0 == strncmp(cmd, STRING_SEND_FILES, strlen(STRING_SEND_FILES))) {
+                    long repeat = atol(cmd+strlen(STRING_SEND_FILES));
+                    char* tmp = strchr(cmd+strlen(STRING_SEND_FILES), ' ');
+                    assert(tmp);
+
+                    char url[10240];
+                    um_strcpy(url, sizeof(url), tmp+1);
+
+                    char buf[10240];
+                    size_t size = ufile_read(url, buf, sizeof(buf));
+                    assert(size > 0 && size < sizeof(buf));
+
+                    int idx;
+                    for(idx=0; idx<repeat; idx++) {
+                        ssize_t nwrite = write(kcfg.clientfd, buf, size);
+                        assert(nwrite == size);
+                    }
+                }
+                
                 else {
                     response("unkown command 0.\n");
 
@@ -301,76 +322,50 @@ int printf_receive(void)
 }
 
 
-
-
-
-/*
-                    
-                    ret = pthread_create(&kcfg.pth, NULL, func_create_server, (void*)port);
-                    assert(0 == ret);
-                   
-void* func_create_server(void* arg);
-void* func_create_server(void* arg)
+void stringprint(void)
 {
-    long port = (long)kcfg.port;
-    kcfg.serverfd = usocket_create_tcp_server(port, 20);
-    response("create server on port %ld, fd %d.\n", port, kcfg.serverfd);
-    assert(kcfg.serverfd > 0);
-
-    int nread;
-    
-    while(1) {
-        char cmd[1024];
-        nread = read(kcfg.pipe_cmd[0], cmd, sizeof(cmd)-1);
-        assert(nread > 0);
-
-        if(0 == strcmp(cmd, "accept")) {
-            struct sockaddr_in client_addr;
-            socklen_t client_addr_len;
-            char client_ip_str[1024];
-
-
-            client_addr_len = sizeof(client_addr);
-            kcfg.clientfd = accept(kcfg.serverfd, (struct sockaddr *) &client_addr, &client_addr_len);
-            assert (kcfg.clientfd > 0);
-
-            const char* tmp = inet_ntop(AF_INET, &(client_addr.sin_addr), client_ip_str, sizeof(client_ip_str));
-            if(tmp) {
-                printf("accept a client[%d] from: %s\n", kcfg.clientfd, client_ip_str);
-            }
-            else {
-                ulogerr("accept a client[%d] but inet_ntop failed.\n", kcfg.clientfd);
+    char* s = "1234567890";
+    size_t size = 0;
+    s = ufile_dup("socket.c", &size);
+    int len = strlen(s);
+    int line1 = 64;
+    int number_line = (len+(line1-1)) / line1;
+    int line;
+    int idx;
+    for(line=0; line<number_line; line++) {
+        for(idx=0; idx<line1; idx++) {
+            int sn = line*line1 + idx;
+            if(sn < len) {
+                printf("%02x %s", s[sn], (sn+1)%8==0?" ":"");
             }
         }
-        else if(0 == strcmp(cmd, "read")) {
 
-            char buf[1024];
-            while(1) {
-                int nread = read(kcfg.clientfd, buf, sizeof(buf)-1);
-                printf("nread = %d, %s\n", nread, strerror(errno));
-                assert(nread >= 0);
-                buf[nread] = '\0';
-
-                printf("%s\n", buf);
-
-                ustr_t str;
-                ustr_replaces(buf, "\r\n", "\\r\\n\r\n", &str);
-                printf("%s\n", str.s);
-                um_strcpy(buf, sizeof(buf), str.s);
-
-                printf("%s\n", buf);
+        for(idx=0; idx<line1; idx++) {
+            int sn = line*line1 + idx;
+            if(sn < len) {
+                printf("%c", isprint(s[sn])?s[sn]:'.');
             }
         }
-        else {
-            response("unkown cmd.\n");
-        }
+
+        printf("\n");
+
     }
 
 
-    return NULL;
+
 }
 
-*/
+
+
+
+
+
+
+
+
+
+
+
 
 
 

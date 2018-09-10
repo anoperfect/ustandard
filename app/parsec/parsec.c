@@ -962,7 +962,7 @@ int main(int argc, char* argv[])
 {
     uloginf("total file number : %d\n", argc-1);
 
-    int umalloc_enable(int set); umalloc_enable(true);
+    umalloc_enable_monitor(true);
     int idx;
     for(idx=1; idx<argc; idx++) {
         char* filename = argv[idx];

@@ -4,7 +4,7 @@ __BEGIN_DECLS
 
 
 struct uarray* uarray_create(size_t size_entry);
-struct uarray* uarray_create_detail(size_t size_entry, int limit, int num_init, int num_expand, upf_description des);
+struct uarray* uarray_create_detail(size_t size_entry, int limit, int num_init, int num_expand, uf_pointer_description des);
 void uarray_destroy(struct uarray* array);
 
 int uarray_count(struct uarray* array);

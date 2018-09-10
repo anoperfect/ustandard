@@ -3,79 +3,80 @@
 #include "ustandard/ulinklist.h"
 
 
-struct node {
-    struct node* prev;
-    struct node* next;
+struct ulinklist_node {
+    struct ulinklist_node* prev;
+    struct ulinklist_node* next;
 
-    struct uvdata data;
+    void* p;
 };
 
 
 struct ulinklist {
 
-    struct node* header; /* default header. */
-    struct node* tailer;
+    struct ulinklist_node* header; /* default header. */
+    struct ulinklist_node* tailer;
 
-    struct node* curr;
+    struct ulinklist_node* curr;
 
     int num;
 
-    uvdata_free_func data_free;
+    uf_pointer_free         pointer_free;
+    uf_pointer_description  pointer_description;
 };
 
 
-static int _ulinklist_remove_node(struct ulinklist* list, struct node* node);
-
 struct ulinklist* ulinklist_create(void)
 {
-    struct ulinklist* list = um_malloc(sizeof(*list));
-    struct node* node = um_malloc(sizeof(*node));
-    if(NULL != list && NULL != node) {
-        node->prev = NULL;
-        node->next = NULL;
-        node->data.p = NULL;
-        node->data.use_payload = false;
-        node->data.sign_remove = false;
-        
-        list->header = node;
-        list->curr = node;
-        list->tailer = NULL;
+    struct ulinklist* list = um_malloc(sizeof(*list) + 2 * sizeof(struct ulinklist_node));
+    
+    if(NULL != list) {
+        list->header = (struct ulinklist_node*)((unsigned char*)list + sizeof(*list));
+        list->tailer = (struct ulinklist_node*)((unsigned char*)list + sizeof(*list) + sizeof(struct ulinklist_node));
+
+        list->header->prev = NULL;
+        list->header->next = list->tailer;
+        list->header->p = NULL;
+
+        list->tailer->prev = list->header;
+        list->tailer->next = NULL;
+        list->tailer->p = NULL;
+
+        list->curr = list->header;
         list->num = 0;
-    }
-    else {
-        um_free_check(list);
-        um_free_check(node);
+
+        list->pointer_free          = NULL;
+        list->pointer_description   = NULL;
     }
 
     return list;
 }
 
 
-struct ulinklist* ulinklist_create_detail(uvdata_free_func data_free)
+struct ulinklist* ulinklist_create_detail(uf_pointer_free pointer_free, uf_pointer_description  pointer_description)
 {
     struct ulinklist* list = ulinklist_create();
     if(list) {
-        list->data_free = data_free;
+        list->pointer_free          = pointer_free;
+        list->pointer_description   = pointer_description;
     }
     return list;
 }
 
+static int _ulinklist_remove_node(struct ulinklist* list, struct ulinklist_node* node);
 
-int ulinklist_destroy(struct ulinklist* list, bool clear)
+int ulinklist_destroy(struct ulinklist* list)
 {
     int ret = 0;
 
-    struct node* node;
-    while(NULL != (node = list->header->next)) {
+    struct ulinklist_node* node;
+    while(list->tailer != (node = list->header->next)) {
         _ulinklist_remove_node(list, node);
-        if(clear && list->data_free) {
-            list->data_free(&node->data);
-            memset(&node->data, 0, sizeof(node->data));
-        }
-        um_free_check(node);
+            if(list->pointer_free) {
+                list->pointer_free(node->p);
+            }
+            um_free_check(node);
     }
 
-    um_free(list->header);
     um_free(list);
 
     return ret;
@@ -84,23 +85,35 @@ int ulinklist_destroy(struct ulinklist* list, bool clear)
 
 int ulinklist_length(struct ulinklist* list)
 {
-    return list->num;
+    return list->num ;
 }
 
 
-struct uvdata* ulinklist_header(struct ulinklist* list)
+void* ulinklist_header_value(struct ulinklist* list, struct ulinklist_node** ppnode)
 {
-    return &list->header->data;
+    if(list->header->next != list->tailer) {
+        *ppnode = list->header->next;
+        return list->header->next->p;
+    }
+    else {
+        return NULL;
+    }
 }
 
 
-struct uvdata* ulinklist_tailer(struct ulinklist* list)
+void* ulinklist_tailer_value(struct ulinklist* list, struct ulinklist_node** ppnode)
 {
-    return &list->tailer->data;
+    if(list->tailer->prev != list->header) {
+        *ppnode = list->tailer->prev;
+        return list->tailer->prev->p;
+    }
+    else {
+        return NULL;
+    }
 }
 
 
-int _ulinklist_add_node_after(struct ulinklist* list, struct node* node, struct node* add)
+static int _ulinklist_add_node_after(struct ulinklist* list, struct ulinklist_node* node, struct ulinklist_node* add)
 {
     uslog_check_arg(list != NULL, -1);
     uslog_check_arg(node != NULL, -1);
@@ -111,37 +124,21 @@ int _ulinklist_add_node_after(struct ulinklist* list, struct node* node, struct 
     add->next = node->next;
     add->prev = node;
 
+    node->next->prev = add;
     node->next = add;
 
     list->num ++;
-    if(1 == list->num || node == list->tailer) {
-        list->tailer = add;
-    }
 
     return ret;
 }
 
 
-struct node* _ulinklist_new_node(void* p)
+struct ulinklist_node* _ulinklist_new_node(void* p)
 {
-    struct node* add = um_malloc(sizeof(*add));
-    add->data.p = p;
-    add->data.use_payload = false;
-    add->data.sign_remove = false;
-    add->data.size = 0;
-
-    return add;
-}
-
-
-struct node* _ulinklist_new_node_by_copy(void* p, size_t size)
-{
-    struct node* add = um_malloc(sizeof(*add) + size);
-    add->data.p = NULL;
-    add->data.use_payload = true;
-    add->data.sign_remove = false;
-    add->data.size = size;
-    memcpy(add->data.payload, p, size);
+    struct ulinklist_node* add = um_malloc(sizeof(*add));
+    add->prev = NULL;
+    add->next = NULL;
+    add->p = p;
 
     return add;
 }
@@ -149,9 +146,10 @@ struct node* _ulinklist_new_node_by_copy(void* p, size_t size)
 
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 
-struct node* _ulinklist_find_node_by_data(struct ulinklist* list, struct uvdata* data)
+#if 0
+struct ulinklist_node* _ulinklist_find_node_by_data(struct ulinklist* list, struct uvdata* data)
 {
-    struct node* node = (void*)data - ((size_t)&((struct node*)0)->data);
+    struct ulinklist_node* node = (void*)data - ((size_t)&((struct ulinklist_node*)0)->data);
     /* it's just a simple verification. not strict. */
     if(&node->data == data) {
         return node;
@@ -161,98 +159,16 @@ struct node* _ulinklist_find_node_by_data(struct ulinklist* list, struct uvdata*
         return NULL;
     }
 }
+#endif
+
 
 
 int ulinklist_add_header(struct ulinklist* list, void* p)
 {
     int ret = 0;
 
-    struct node* add = _ulinklist_new_node(p);
+    struct ulinklist_node* add = _ulinklist_new_node(p);
     _ulinklist_add_node_after(list, list->header, add);
-    
-    return ret;
-}
-
-
-int ulinklist_add_header_by_copy(struct ulinklist* list, void* p, size_t size)
-{
-    int ret = 0;
-
-    struct node* add = _ulinklist_new_node_by_copy(p, size);
-
-    _ulinklist_add_node_after(list, list->header, add);
-    
-    return ret;
-}
-
-
-int ulinklist_add_after(struct ulinklist* list, struct uvdata* data, void* p)
-{
-    int ret = 0;
-
-    struct node* add = _ulinklist_new_node(p);
-    struct node* node = _ulinklist_find_node_by_data(list, data);
-
-    _ulinklist_add_node_after(list, node, add);
-    
-    return ret;
-}
-
-
-int ulinklist_add_after_by_copy(struct ulinklist* list, struct uvdata* data, void* p, size_t size)
-{
-    int ret = 0;
-
-    struct node* add = _ulinklist_new_node_by_copy(p, size);
-    struct node* node = _ulinklist_find_node_by_data(list, data);
-
-    _ulinklist_add_node_after(list, node, add);
-    
-    return ret;
-}
-
-
-int ulinklist_add_before(struct ulinklist* list, struct uvdata* data, void* p)
-{
-    int ret = 0;
-
-    struct node* add = _ulinklist_new_node(p);
-    struct node* node = _ulinklist_find_node_by_data(list, data);
-    node = node->prev;
-
-    _ulinklist_add_node_after(list, node, add);
-    
-    return ret;
-}
-
-
-int ulinklist_add_before_by_copy(struct ulinklist* list, struct uvdata* data, void* p, size_t size)
-{
-    int ret = 0;
-
-    struct node* add = _ulinklist_new_node_by_copy(p, size);
-    struct node* node = _ulinklist_find_node_by_data(list, data);
-    node = node->prev;
-
-    _ulinklist_add_node_after(list, node, add);
-    
-    return ret;
-}
-
-
-int ulinklist_remove_data(struct ulinklist* list, struct uvdata* data, bool clear)
-{
-    int ret = 0;
-
-    struct node* node = _ulinklist_find_node_by_data(list, data);
-    if(NULL != node) {
-        _ulinklist_remove_node(list, node);
-
-        if(clear && NULL != list->data_free) {
-            list->data_free(data);
-            memset(data, 0, sizeof(*data));
-        }
-    }
     
     return ret;
 }
@@ -262,57 +178,30 @@ int ulinklist_add_tailer(struct ulinklist* list, void* p)
 {
     int ret = 0;
 
-    struct node* add = _ulinklist_new_node(p);
+    struct ulinklist_node* add = _ulinklist_new_node(p);
+    _ulinklist_add_node_after(list, list->tailer->prev, add);
 
-    if(NULL != list->tailer) {
-        _ulinklist_add_node_after(list, list->tailer, add);
-    }
-    else {
-        _ulinklist_add_node_after(list, list->header, add);
-    }
-
-    list->tailer = add;
-    
-    return ret;
-}
-
-
-int ulinklist_add_tailer_by_copy(struct ulinklist* list, void* p, size_t size)
-{
-    int ret = 0;
-
-    struct node* add = _ulinklist_new_node_by_copy(p, size);
-
-    if(NULL != list->tailer) {
-        _ulinklist_add_node_after(list, list->tailer, add);
-    }
-    else {
-        _ulinklist_add_node_after(list, list->header, add);
-    }
-
-    list->tailer = add;
-    
     return ret;
 }
 
 
 
-int _ulinklist_remove_node(struct ulinklist* list, struct node* node)
+
+int _ulinklist_remove_node(struct ulinklist* list, struct ulinklist_node* node)
 {
     int ret = 0;
 
     node->prev->next = node->next;
-    if(NULL != node->next) {
-        node->next->prev = node->prev;
-    }
-    else {
-        if(node->prev == list->header) {
-            list->tailer = NULL;
-        }
-        else {
-            list->tailer = node->prev;
+    node->next->prev = node->prev;
+
+    if(list->pointer_free) {
+        if(node->p) {
+            list->pointer_free(node->p);
+            node->p = NULL;
         }
     }
+    um_free(node);
+    node = NULL;
 
     list->num --;
 
@@ -320,6 +209,8 @@ int _ulinklist_remove_node(struct ulinklist* list, struct node* node)
 }
 
 
+
+#if 0
 struct uvdata* ulinklist_next(struct ulinklist* list)
 {
     if(NULL != list->curr->next) {
@@ -353,7 +244,7 @@ struct uvdata* ulinklist_at(struct ulinklist* list, int idx)
     struct uvdata* data = NULL;
 
     int t = 0;
-    struct node* node = list->header;
+    struct ulinklist_node* node = list->header;
     while(node && t<idx) {
         node = node->next;
         t ++;
@@ -366,4 +257,97 @@ struct uvdata* ulinklist_at(struct ulinklist* list, int idx)
     return data;
 }
 
+#endif
 
+
+void* ulinklist_pop(struct ulinklist* list)
+{
+    void* retp = NULL;
+    if(list->header->next != list->tailer) {
+        retp = list->header->next->p;
+        _ulinklist_remove_node(list, list->header->next);
+    }
+    else {
+        return NULL;
+
+    }
+
+    return retp;
+}
+
+
+int ulinklist_description(struct ulinklist* list, char* s, size_t size)
+{
+    int ret = 0;
+
+    struct ulinklist_node* node = list->header->next;
+    size_t offset = 0;
+    void* p = NULL;
+    s[0] = '\0';
+    while(node && node != list->tailer) {
+        p = node->p;
+        offset = strlen(s);
+        if(list->pointer_description) {
+            list->pointer_description(p, s+offset, size-offset);
+
+            offset = strlen(s);
+            snprintf(s+offset, size-offset, " ");
+        }
+        else {
+            snprintf(s+offset, size-offset, "%p ", p);
+        }
+
+        node = node->next;
+    }
+
+    return ret;
+}
+
+
+#if 0
+int ulinklist_add_after(struct ulinklist* list, void* node, void* p)
+{
+    int ret = 0;
+
+    struct ulinklist_node* add = _ulinklist_new_node(p);
+    struct ulinklist_node* node = _ulinklist_find_node_by_data(list, data);
+
+    _ulinklist_add_node_after(list, node, add);
+    
+    return ret;
+}
+
+
+int ulinklist_add_before(struct ulinklist* list, struct uvdata* data, void* p)
+{
+    int ret = 0;
+
+    struct ulinklist_node* add = _ulinklist_new_node(p);
+    struct ulinklist_node* node = _ulinklist_find_node_by_data(list, data);
+    node = node->prev;
+
+    _ulinklist_add_node_after(list, node, add);
+    
+    return ret;
+}
+
+
+
+int ulinklist_remove_data(struct ulinklist* list, struct uvdata* data, bool clear)
+{
+    int ret = 0;
+
+    struct ulinklist_node* node = _ulinklist_find_node_by_data(list, data);
+    if(NULL != node) {
+        _ulinklist_remove_node(list, node);
+
+        if(clear && NULL != list->data_free) {
+            list->data_free(data);
+            memset(data, 0, sizeof(*data));
+        }
+    }
+    
+    return ret;
+}
+
+#endif

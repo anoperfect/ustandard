@@ -2,7 +2,7 @@
 #include "ustandard/udevelop.h"
 #include "ustandard/ubuffer_format.h"
 int ubuffer_format(char* dest, size_t size_dest, 
-        const void* ptr, size_t size, ubuffer_char_type_e type, char space, int num_in_line)
+        const void* ptr, size_t size, ubuffer_char_type_e type, const char* space, int num_in_line)
 {
     int ret = 0;
     dest[0] = '\0';
@@ -11,8 +11,6 @@ int ubuffer_format(char* dest, size_t size_dest,
         ret = -1;
         return ret;
     }
-
-    const char* spaces = "";
 
     if(type == e_ubuffer_char_type_default) {
         type = e_ubuffer_char_type_0x;
@@ -24,28 +22,28 @@ int ubuffer_format(char* dest, size_t size_dest,
     for(i=0; i<size; i++) {
         switch(type) {
             case e_ubuffer_char_type_0x:
-            n = snprintf(dest+idx, size_dest-idx, "0x%02x%c", ((unsigned char*)ptr)[i], space);
+            n = snprintf(dest+idx, size_dest-idx, "0x%02x%s", ((unsigned char*)ptr)[i], space);
             break;
 
             case e_ubuffer_char_type_0X:
-            n = snprintf(dest+idx, size_dest-idx, "0X%02X%c", ((unsigned char*)ptr)[i], space);
+            n = snprintf(dest+idx, size_dest-idx, "0X%02X%s", ((unsigned char*)ptr)[i], space);
             break;
 
             case e_ubuffer_char_type_0xprint:
             if(!isprint(((char*)ptr)[i])) {
-                n = snprintf(dest+idx, size_dest-idx, " 0x%02x%s ", ((unsigned char*)ptr)[i], spaces);
+                n = snprintf(dest+idx, size_dest-idx, " 0x%02x%s ", ((unsigned char*)ptr)[i], space);
             }
             else {
-                n = snprintf(dest+idx, size_dest-idx, "%c%s", ((unsigned char*)ptr)[i], spaces);
+                n = snprintf(dest+idx, size_dest-idx, "%c%s", ((unsigned char*)ptr)[i], space);
             }
             break;
 
             case e_ubuffer_char_type_print:
-            n = snprintf(dest+idx, size_dest-idx, "%c%c", ((unsigned char*)ptr)[i], space);
+            n = snprintf(dest+idx, size_dest-idx, "%c%s", ((unsigned char*)ptr)[i], space);
             break;
 
             default:
-            n = snprintf(dest+idx, size_dest-idx, "0x%02x%c", ((unsigned char*)ptr)[i], space);
+            n = snprintf(dest+idx, size_dest-idx, "0x%02x%s", ((unsigned char*)ptr)[i], space);
             break;
         }
 
@@ -100,7 +98,7 @@ int ubuffer_tostr_deinit(void)
 
 const char* ubuffer_tostr(const void* ptr, size_t size, 
         ubuffer_char_type_e type, 
-        char space, int num_in_line)
+        const char* space, int num_in_line)
 {
     const char* retstr = NULL;
 
@@ -117,9 +115,12 @@ const char* ubuffer_tostr(const void* ptr, size_t size,
 const char* ubuffer_tostr_easy(const void* ptr, size_t size)
 {
     const char* retstr = NULL;
-    retstr = ubuffer_tostr(ptr, size, e_ubuffer_char_type_default, ' ', 16);
+    retstr = ubuffer_tostr(ptr, size, e_ubuffer_char_type_default, " ", 16);
     return retstr;
 }
+
+
+
 
 
 

@@ -9,7 +9,7 @@ struct uarray {
     int limit;      /* expand limit. 0 mean no limit.*/
 
 
-    updescription des;
+    uf_pointer_description des;
 
     size_t size_entry;
     void *p;
@@ -55,7 +55,7 @@ struct uarray* uarray_create(size_t size_entry)
 }
 
 
-struct uarray* uarray_create_detail(size_t size_entry, int limit, int num_init, int num_expand, updescription des)
+struct uarray* uarray_create_detail(size_t size_entry, int limit, int num_init, int num_expand, uf_pointer_description des)
 {
     struct uarray* array = _uarray_create(size_entry, limit, num_init, num_expand);
     if(array) {
@@ -213,7 +213,7 @@ int uarray_description(struct uarray* array, const char* title, char* dest, size
     int idx;
     for(idx=0; idx<array->count; idx++) {
         char tmp[1024];
-        array->des(tmp, 1024, array->p + array->size_entry * idx);
+        array->des(array->p + array->size_entry * idx, tmp, sizeof(tmp));
         ustrcat_format(dest, size, "%2d : %s\n", idx, tmp);
     }
 

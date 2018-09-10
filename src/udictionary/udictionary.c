@@ -14,7 +14,7 @@
 
 
 typedef struct udictionary* udictionary_t;
-udictionary_t udictionary_create(upfree_func key_free, upfree_func value_free);
+udictionary_t udictionary_create(uf_pointer_free key_free, uf_pointer_free value_free);
 void udictionary_destroy(udictionary_t dict);
 
 int udictionary_set(udictionary_t dict, void* key, void* value);

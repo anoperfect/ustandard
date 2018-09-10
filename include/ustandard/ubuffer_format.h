@@ -16,7 +16,7 @@ typedef enum{
 int ubuffer_format(char* dest, size_t size_dest, 
         const void* ptr, size_t size, 
         ubuffer_char_type_e type, 
-        char space, int num_in_line);
+        const char* space, int num_in_line);
 
 
 /* ->ustandard_init. */
@@ -28,7 +28,7 @@ int ubuffer_tostr_deinit(void);
 
 const char* ubuffer_tostr(const void* ptr, size_t size, 
         ubuffer_char_type_e type, 
-        char space, int num_in_line);
+        const char* space, int num_in_line);
 
 
 const char* ubuffer_tostr_easy(const void* ptr, size_t size);

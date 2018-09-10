@@ -50,14 +50,9 @@ typedef void (*uvdata_free_func)(struct uvdata*);
 
 
 
-typedef void (*upfree_func)(void* p);
+typedef void (*uf_pointer_free)(void* p);
+typedef int  (*uf_pointer_description)(const void* p, char* str, size_t size);
 
-
-
-typedef int (*updescription)(char* str, size_t size, void* p);
-
-
-typedef int (*upf_description)(char* str, size_t size, void* p);
 
 
 
